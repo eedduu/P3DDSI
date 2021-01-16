@@ -11,6 +11,7 @@ def consultarStockMed(conexion, idMed)
 
 #Disparador en el 3.2 para que insertemos una maquina en una cita y comprueba que esa maquina no esté en otra cita
 #Lo dejo planteado
+
 argumentos: idmaq, idconsul
 REATE OR REPLACE TRIGGER comprobar_maquinas BEFORE INSERT ON Reserva FOR EACH ROW
 BEGIN
