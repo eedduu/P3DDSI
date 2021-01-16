@@ -19,7 +19,7 @@ def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
         print('...Error modificando el historial:\n\t{}\n'.format(error))
 
 
-def getHistorial(conexion):
+def getHistorial(conexion,dni):
     cursor = conexion.cursor()
 
     try:
