@@ -35,7 +35,7 @@ CREATE OR REPLACE PACKAGE BODY Historiales AS
 		dnipaciente TratamientoTrata.DNIpaciente%type)
 	IS 
 	BEGIN 
-		ISERT INTO TratamientoTrata (IDtratamiento, FechaI, FechaF, Descripcion, DNIpaciente)
+		INSERT INTO TratamientoTrata (IDtratamiento, FechaI, FechaF, Descripcion, DNIpaciente)
 		VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente) 
 	END addTratamiento; 
 
