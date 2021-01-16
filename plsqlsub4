@@ -1,0 +1,28 @@
+CREATE OR REPLACE PACKAGE BODY Consultas AS 
+	PROCEDURE pedirConsultaCab(fecha date, dniPa varchar2(9), dniCab varchar2(9))
+ 	IS 
+	BEGIN 
+		insert into ConsultaPideRealiza values ( 01, fecha, '19191919Z', '23973136C')
+		INSERT INTO Consultas (DNIpaciente,Telefono,PyA,GS,DNIempleado) 
+		VALUES(dni, telefono, pya, gs, dniempleado); 
+   	END pedirConsultaCab; 
+
+	PROCEDURE cancelarConsulta()
+ 	IS 
+	BEGIN 
+		DELETE () FROM ConsultaPideRealiza 
+   	END cancelarConsulta; 
+   
+	PROCEDURE confirmacion ()
+	IS 
+	BEGIN 
+		UPDATE 
+	END confirmacion; 
+
+	PROCEDURE derivarEsp ()
+	IS 
+	BEGIN 
+		INSERT INTO ConsultaPideRealiza VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente) 
+	END derivarEsp; 
+
+END Consultas;
