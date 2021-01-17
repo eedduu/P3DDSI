@@ -1,6 +1,7 @@
 import cx_Oracle
 import config
 import creacion_tablas
+import sub4.py
 
 
 # Conexión con la base de datos
@@ -39,7 +40,7 @@ while True:
     	print('Funcionalidad en construccion D:')
     # Gestion de consultas
     elif opc==4:
-    	print('we')
+    	sub4.menuConsulta()
     # Sale del menú
     elif opc==5:
     	break
