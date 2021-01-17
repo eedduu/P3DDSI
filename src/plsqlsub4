@@ -1,28 +1,34 @@
 CREATE OR REPLACE PACKAGE BODY Consultas AS 
-	PROCEDURE pedirConsultaCab(fecha date, dniPa varchar2(9), dniCab varchar2(9))
+	PROCEDURE pedirConsultaCab(fecha date, dniPa varchar2(9))
  	IS 
+ 		dniCab varchar2(8);
+ 		nuevoID int;
 	BEGIN 
-		insert into ConsultaPideRealiza values ( 01, fecha, '19191919Z', '23973136C')
-		INSERT INTO Consultas (DNIpaciente,Telefono,PyA,GS,DNIempleado) 
-		VALUES(dni, telefono, pya, gs, dniempleado); 
+		SELECT DNIempleado INTO dniCab FROM HistorialAsigna WHERE DNIpaciente = dniPa ;
+		SELECT IDconsulta INTO nuevoID FROM ConsultaPideRealiza WHERE IDconsulta >= ANY ( SELECT IDconsulta FROM ConsultaPideRealiza );
+		nuevoID := nuevoID + 1 ;
+		INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, fecha, dniPa, dniCab ); 
    	END pedirConsultaCab; 
 
-	PROCEDURE cancelarConsulta()
+	PROCEDURE cancelarConsulta( idcon int )
  	IS 
 	BEGIN 
-		DELETE () FROM ConsultaPideRealiza 
+		DELETE FROM ConsultaPideRealiza WHERE IDconsulta = idcon; 
    	END cancelarConsulta; 
    
-	PROCEDURE confirmacion ()
+	PROCEDURE confirmacion ( idcon int )
 	IS 
 	BEGIN 
-		UPDATE 
+		UPDATE ConsultaPideRealiza SET Valida = 'true' WHERE IDconsulta = idcon;
 	END confirmacion; 
 
-	PROCEDURE derivarEsp ()
-	IS 
+	PROCEDURE derivarEsp ( fecha date, dniPa varchar2(9), dniEs varchar2(9) )
+	IS
+		nuevoID int;
 	BEGIN 
-		INSERT INTO ConsultaPideRealiza VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente) 
+		SELECT IDconsulta INTO nuevoID FROM ConsultaPideRealiza WHERE IDconsulta >= ANY ( SELECT IDconsulta FROM ConsultaPideRealiza );
+		nuevoID := nuevoID + 1 ;
+		INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, fecha, dniPa, dniEs ); 
 	END derivarEsp; 
 
 END Consultas;
