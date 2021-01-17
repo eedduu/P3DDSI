@@ -1,8 +1,10 @@
 import cx_Oracle
+import datetime
 
 
-def menuConsulta():
+def menuConsulta(conn):
 
+	cursor = conn.cursor()
 	while True:
 
 	    # Opción del menú
@@ -19,7 +21,18 @@ def menuConsulta():
 
 	    # Gestion de empleados
 	    if opc==1:
-	    	print('Funcionalidad en construccion (:')
+	    	dni = input('DNI del paciente: ')
+	    	dia = int(input('   Día: '))
+	    	mes = int(input('   Mes: '))
+	    	anyo = int(input('   Año: '))
+	    	fecha_correcta = True
+	    	try:
+	    		fecha = datetime.date(anyo,mes,dia).__str__()
+	    	except:
+	    		print("Fecha inválida.")
+	    		fecha_correcta = False
+	    		
+	    	cursor.callproc('pedirConsultaCab', [fecha, dni] )
 	    # Gestión de historiales médicos de pacientes
 	    elif opc==2:
 	    	print('Funcionalidad en construccion ):')
@@ -39,8 +52,6 @@ def menuConsulta():
 	
 
 
-
-def pedirConsulta(conexion, fecha, dniPa)
 
 
 #Disparador

@@ -134,7 +134,7 @@ def crear_tablas(conexion):
 		cursor.execute('''
 			CREATE TABLE ConsultaPideRealiza(
 				IDconsulta int PRIMARY KEY,
-				Valida varchar2() CHECK (Valida in ('true', 'false')),
+				Valida varchar2(5) CHECK (Valida in ('true', 'false')),
 				Fecha date,
 				DNIpaciente NOT NULL REFERENCES HistorialAsigna(DNIpaciente),
 				DNIempleado NOT NULL REFERENCES Empleado(DNIempleado)

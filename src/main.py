@@ -1,7 +1,8 @@
 import cx_Oracle
 import config
 import creacion_tablas
-import sub4.py
+import sub4
+import sqlscript
 
 
 # Conexión con la base de datos
@@ -11,8 +12,26 @@ conn = cx_Oracle.connect(config.userid +'/'+ config.userid +'@'+ config.host +':
 aux = conn.cursor()
 
 # creacion_tablas.borrar_tablas(conn)
-creacion_tablas.crear_tablas(conn)
-creacion_tablas.insertar_tuplas_iniciales(conn)
+
+
+
+try:
+	creacion_tablas.crear_tablas(conn)
+except cx_Oracle.IntegrityError as error:
+	print('Error borrando las tablas:\n\t{}\n'.format(error))
+
+try:
+	creacion_tablas.insertar_tuplas_iniciales(conn)
+except cx_Oracle.IntegrityError as error:
+	print('Error borrando las tablas:\n\t{}\n'.format(error))
+
+print('Creando funcionalidades sql')
+sqlscript.run_sql_script(conn, "plsqlsub4",
+                          main_user= "yo",
+                          main_password="1234",
+                          edition_user="tu",
+                          edition_password="1234",
+                          edition_name="bof")
 
 # Hasta salir del menú
 while True:
@@ -40,7 +59,7 @@ while True:
     	print('Funcionalidad en construccion D:')
     # Gestion de consultas
     elif opc==4:
-    	sub4.menuConsulta()
+    	sub4.menuConsulta(conn)
     # Sale del menú
     elif opc==5:
     	break
@@ -48,9 +67,13 @@ while True:
     else:
     	print('Opcion no valida, vuelva a elegir.\n')
 
-creacion_tablas.borrar_tablas(conn)
+try:
+	creacion_tablas.borrar_tablas(conn)
+except cx_Oracle.IntegrityError as error:
+	print('Error borrando las tablas:\n\t{}\n'.format(error))
+
 
 # Nos desconectamos 
 print('Desconectandose de la bases de datos...')
-conexion.close()
+conn.close()
 print('Se ha desconectado satisfactoriamente.\n')
