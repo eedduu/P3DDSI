@@ -85,7 +85,7 @@ def menuHistorial(conexion):
 			if (dniempleado == None):
 				dniempleado == historialant[4]
 				
-				modHistorial(conexion,dni,telefono,pya,gs,dniempleado)
+			modHistorial(conexion,dni,telefono,pya,gs,dniempleado)
 
 			else:
 				print('Introduzca el DNI asociado al historial que se quiere modificar')
