@@ -114,12 +114,12 @@ def crear_tablas(conexion):
 			
 		cursor.execute('''
 			CREATE TABLE MedCabecera(
-				DNIempleado PRIMARY KEY REFERENCES Empleado(DNIempleado)
+				DNIempleado PRIMARY KEY REFERENCES Empleado(DNIempleado) ON DELETE CASCADE
 			)''')
 
 		cursor.execute('''
 			CREATE TABLE MedEspecialista(
-				DNIempleado PRIMARY KEY REFERENCES Empleado(DNIempleado)
+				DNIempleado PRIMARY KEY REFERENCES Empleado(DNIempleado) ON DELETE CASCADE
 			)''')
 
 		cursor.execute('''
