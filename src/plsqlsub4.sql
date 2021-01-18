@@ -6,6 +6,7 @@ BEGIN
 	SELECT IDconsulta INTO nuevoID FROM ConsultaPideRealiza WHERE IDconsulta >= ALL ( SELECT IDconsulta FROM ConsultaPideRealiza );
 	nuevoID := nuevoID + 1 ;
 	INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, 'false', TO_DATE( fecha,'YYYY-MM-DD'), dniPa, dniCab ); 
+	COMMIT;
 END pedirConsultaCab;
 /
 
@@ -13,12 +14,14 @@ CREATE OR REPLACE PROCEDURE cancelarConsulta( idcon INTEGER ) IS
 BEGIN 
 	DELETE FROM Reserva WHERE IDconsulta = idcon; 
 	DELETE FROM ConsultaPideRealiza WHERE IDconsulta = idcon; 
+	COMMIT;
 END cancelarConsulta; 
 /
    
 CREATE OR REPLACE PROCEDURE confirmacion ( idcon INTEGER ) IS 
 BEGIN 
 	UPDATE ConsultaPideRealiza SET Valida = 'true' WHERE IDconsulta = idcon;
+	COMMIT;
 END confirmacion; 
 /
 
@@ -28,6 +31,7 @@ BEGIN
 	SELECT IDconsulta INTO nuevoID FROM ConsultaPideRealiza WHERE IDconsulta >= ALL ( SELECT IDconsulta FROM ConsultaPideRealiza );
 	nuevoID := nuevoID + 1 ;
 	INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, 'false', TO_DATE( fecha,'YYYY-MM-DD'), dniPa, dniEs ); 
+	COMMIT;
 END derivarEsp;
 /
 
