@@ -6,9 +6,12 @@ BEGIN
 		INSERT INTO MedEspecialista VALUES (dniEmp);
 	ELSIF (tipo = 'C') THEN
 		INSERT INTO MedCabecera VALUES (dniEmp);
+	ELSE 
+		RAISE_APPLICATION_ERROR (-20101, 'Tipo de empleado no válido');
 	END IF;
 
 	COMMIT;
+
 END crearEmpleado;
 /
 
