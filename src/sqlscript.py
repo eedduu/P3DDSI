@@ -14,7 +14,7 @@ import getpass
 import os
 import sys
 
-# default values
+# default values  x7147725/x7147725@oracle0.ugr.es:1521/practbd.oracle0.ugr.es
 DEFAULT_MAIN_USER = "pythondemo"
 DEFAULT_EDITION_USER = "pythoneditions"
 DEFAULT_EDITION_NAME = "python_e1"

@@ -13,21 +13,9 @@ aux = conn.cursor()
 
 # creacion_tablas.borrar_tablas(conn)
 
-
-try:
-	creacion_tablas.borrar_tablas(conn)
-except cx_Oracle.IntegrityError as error:
-	print('Error borrando las tablas:\n\t{}\n'.format(error))
-
-try:
-	creacion_tablas.crear_tablas(conn)
-except cx_Oracle.IntegrityError as error:
-	print('Error creando las tablas:\n\t{}\n'.format(error))
-
-try:
-	creacion_tablas.insertar_tuplas_iniciales(conn)
-except cx_Oracle.IntegrityError as error:
-	print('Error insertando tuplas en las tablas:\n\t{}\n'.format(error))
+creacion_tablas.borrar_tablas(conn)
+creacion_tablas.crear_tablas(conn)
+creacion_tablas.insertar_tuplas_iniciales(conn)
 
 print('Creando funcionalidades sql')
 sqlscript.run_sql_script(conn, "plsqlsub4",
