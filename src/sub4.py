@@ -33,7 +33,12 @@ def menuConsulta(conn):
 	    		fecha_correcta = False
 	    		
 	    	
-	    	cursor.callproc("pedirConsultaCab", (fecha, dni) )
+	    	try:
+	    		cursor.callproc("pedirConsultaCab", (fecha, dni) )
+	    	except cx_Oracle.DatabaseError as error:
+	    		e = error.args[0]
+	    		print(e.code)
+	    		print(e.message)
 	    	
 	    # Cancelar consulta
 	    elif opc==2:
