@@ -32,23 +32,38 @@ def menuConsulta(conn):
 	    		print("Fecha inválida.")
 	    		fecha_correcta = False
 	    		
-	    	
-	    	try:
-	    		cursor.callproc("pedirConsultaCab", (fecha, dni) )
-	    	except cx_Oracle.DatabaseError as error:
-	    		e = error.args[0]
-	    		print(e.code)
-	    		print(e.message)
+	    	if fecha_correcta :
+		    	try:
+		    		cursor.callproc("pedirConsultaCab", (fecha, dni) )
+		    	except cx_Oracle.DatabaseError as error:
+		    		e = error.args[0]
+		    		if e.code == 20001:
+		    			print("\n ---Dni no válido---")
 	    	
 	    # Cancelar consulta
 	    elif opc==2:
 	    	idcon = input('ID de la consulta: ')
-	    	cursor.callproc('cancelarConsulta', (idcon))
+	    	
+	    	try:
+	    		cursor.callproc('cancelarConsulta', (idcon))
+	    	except cx_Oracle.DatabaseError as error:
+	    		e = error.args[0]
+	    		if e.code == 20002:
+	    			print('\n ---Código no válido')
+	    		else:
+	    			print('Error {}'.format(e.code))
 	    	
 	    # Validar consulta
 	    elif opc==3:
 	    	idcon = input('ID de la consulta: ')
-	    	cursor.callproc('confirmacion', (idcon))
+	    	
+	    	try:
+	    		cursor.callproc('confirmacion', (idcon))
+	    	except cx_Oracle.DatabaseError as error:
+	    		e = error.args[0]
+	    		if e.code == 20003:
+	    			print('\n ---Código no válido')
+	    	
 	    	
 	    # Derivar a especialista
 	    elif opc==4:
@@ -64,7 +79,15 @@ def menuConsulta(conn):
 	    		print("Fecha inválida.")
 	    		fecha_correcta = False
 	    		
-	    	cursor.callproc('derivarEsp', (fecha, dniPa, dniEs) )
+	    	if fecha_correcta :
+		    	try:
+		    		cursor.callproc("derivarEsp", (fecha, dniPa, dniEs) )
+		    	except cx_Oracle.DatabaseError as error:
+		    		e = error.args[0]
+		    		if e.code == 20004:
+		    			print("\n ---Dni no válido---")
+		    		else:
+		    			print("Error desconocido")
 	    	
 	    # Sale del menú
 	    elif opc==5:
