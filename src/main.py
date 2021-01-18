@@ -1,6 +1,7 @@
 import cx_Oracle
 import config
 import creacion_tablas
+import sub1
 import sub2
 import sub4
 import sqlscript
@@ -19,6 +20,13 @@ creacion_tablas.crear_tablas(conn)
 creacion_tablas.insertar_tuplas_iniciales(conn)
 
 print('Creando funcionalidades sql')
+sqlscript.run_sql_script(conn, "plsqlsub1",
+                          main_user= "yo",
+                          main_password="1234",
+                          edition_user="tu",
+                          edition_password="1234",
+                          edition_name="bof")
+
 sqlscript.run_sql_script(conn, "plsqlsub4",
                           main_user= "yo",
                           main_password="1234",
@@ -43,7 +51,7 @@ while True:
 
     # Gestion de empleados
     if opc==1:
-    	print('Funcionalidad en construccion (:')
+        sub1.menuEmpleados(conn)
     # Gestión de historiales médicos de pacientes
     elif opc==2:
         sub2.menuHistorial(conn)
