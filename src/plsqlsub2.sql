@@ -7,7 +7,8 @@ CREATE OR REPLACE PACKAGE BODY Historiales AS
  	IS 
 	BEGIN 
 		INSERT INTO HistorialAsigna (DNIpaciente,Telefono,PyA,GS,DNIempleado) 
-		VALUES(dni, telefono, pya, gs, dniempleado); 
+		VALUES(dni, telefono, pya, gs, dniempleado);
+		COMMIT; 
    	END addHistorial; 
 
 	PROCEDURE modHistorial(dni HistorialAsigna.DNIpaciente%type, 
@@ -20,6 +21,7 @@ CREATE OR REPLACE PACKAGE BODY Historiales AS
 		UPDATE HistorialAsigna
 		SET Telefono = telefono, PyA = pya, GS = gs, DNIempleado = dniempleado
 		WHERE DNIpaciente = dni; 
+		COMMIT;
    	END modHistorial; 
    
 	PROCEDURE getHistorial (dni HistorialAsigna.DNIpaciente%type)
@@ -36,7 +38,8 @@ CREATE OR REPLACE PACKAGE BODY Historiales AS
 	IS 
 	BEGIN 
 		INSERT INTO TratamientoTrata (IDtratamiento, FechaI, FechaF, Descripcion, DNIpaciente)
-		VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente) 
+		VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente)
+		COMMIT; 
 	END addTratamiento; 
 
 END Historiales;
