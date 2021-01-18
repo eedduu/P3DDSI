@@ -19,6 +19,13 @@ creacion_tablas.crear_tablas(conn)
 creacion_tablas.insertar_tuplas_iniciales(conn)
 
 print('Creando funcionalidades sql')
+sqlscript.run_sql_script(conn, "plsqlsub1",
+                          main_user= "yo",
+                          main_password="1234",
+                          edition_user="tu",
+                          edition_password="1234",
+                          edition_name="bof")
+
 sqlscript.run_sql_script(conn, "plsqlsub4",
                           main_user= "yo",
                           main_password="1234",
