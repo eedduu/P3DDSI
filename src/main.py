@@ -1,6 +1,7 @@
 import cx_Oracle
 import config
 import creacion_tablas
+import sub2
 import sub4
 import sqlscript
 
@@ -45,7 +46,7 @@ while True:
     	print('Funcionalidad en construccion (:')
     # Gestión de historiales médicos de pacientes
     elif opc==2:
-    	print('Funcionalidad en construccion ):')
+        sub2.menuHistorial(conn)
     # Gestión de inventario del hospital
     elif opc==3:
     	print('Funcionalidad en construccion D:')
