@@ -21,61 +21,61 @@ def borrar_tablas(conexion):
 	# Borrado de tabla Reserva
 	try:
 		cursor.execute('''DROP TABLE Reserva''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla Reserva:\n\t{}\n'.format(error))
 
 	# Borrado de tabla Receta
 	try:
 		cursor.execute('''DROP TABLE Receta''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla Receta:\n\t{}\n'.format(error))
 
 	# Borrado de tabla Maquina
 	try:
 		cursor.execute('''DROP TABLE Maquina''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla Maquina:\n\t{}\n'.format(error))
 
 	# Borrado de tabla Medicamento
 	try:
 		cursor.execute('''DROP TABLE Medicamento''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla Medicamento:\n\t{}\n'.format(error))
 
 	# Borrado de tabla ConsultaPideRealiza
 	try:
 		cursor.execute('''DROP TABLE ConsultaPideRealiza''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla ConsultaPideRealiza:\n\t{}\n'.format(error))
 
 	# Borrado de tabla TratamientoTrata
 	try:
 		cursor.execute('''DROP TABLE TratamientoTrata''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla TratamientoTrata:\n\t{}\n'.format(error))
 
 	# Borrado de tabla HistorialAsigna
 	try:
 		cursor.execute('''DROP TABLE HistorialAsigna''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla HistorialAsigna:\n\t{}\n'.format(error))
 
 	# Borrado de tabla MedEspecialista
 	try:
 		cursor.execute('''DROP TABLE MedEspecialista''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla MedEspecialista:\n\t{}\n'.format(error))
 
 	# Borrado de tabla MedCabecera
 	try:
 		cursor.execute('''DROP TABLE MedCabecera''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla MedCabecera:\n\t{}\n'.format(error))
 		
 	# Borrado de tabla Empleado
 	try:
 		cursor.execute('''DROP TABLE Empleado''')
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error borrando la tabla Empleado:\n\t{}\n'.format(error))
 
 	print('Fin de borrado de tablas.\n')
@@ -165,7 +165,7 @@ def crear_tablas(conexion):
 				PRIMARY KEY (IDtratamiento, IDmedicamento)
 			)''')
 
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('Error creando las tablas:\n\t{}\n'.format(error))
 
 	print('Fin de creación de tablas.\n')
@@ -218,7 +218,7 @@ def insertar_tuplas_iniciales(conexion):
 		cursor.execute('''insert into Receta values (01, 04, 9)''')
 		cursor.execute('''insert into Receta values (02, 03, 11)''')
 		
-	except cx_Oracle.IntegrityError as error:
+	except cx_Oracle.DatabaseError as error:
 		print('...Error insertando las tuplas:\n\t{}\n'.format(error))
 		conexion.rollback()
 	finally:

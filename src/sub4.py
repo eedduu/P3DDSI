@@ -35,13 +35,27 @@ def menuConsulta(conn):
 	    	cursor.callproc('pedirConsultaCab', [fecha, dni] )
 	    # Gestión de historiales médicos de pacientes
 	    elif opc==2:
-	    	print('Funcionalidad en construccion ):')
+	    	idcon = input('ID de la consulta: ')
+	    	cursor.callproc('cancelarConsulta', [idcon])
 	    # Gestión de inventario del hospital
 	    elif opc==3:
-	    	print('Funcionalidad en construccion D:')
+	    	idcon = input('ID de la consulta: ')
+	    	cursor.callproc('confirmacion', [idcon])
 	    # Gestion de consultas
 	    elif opc==4:
-	    	print('we')
+	    	dniPa = input('DNI del paciente: ')
+	    	dniEs = input('DNI del médico especialista: ')
+	    	dia = int(input('   Día: '))
+	    	mes = int(input('   Mes: '))
+	    	anyo = int(input('   Año: '))
+	    	fecha_correcta = True
+	    	try:
+	    		fecha = datetime.date(anyo,mes,dia).__str__()
+	    	except:
+	    		print("Fecha inválida.")
+	    		fecha_correcta = False
+	    		
+	    	cursor.callproc('derivarEsp', [fecha, dniPa, dniEs] )
 	    # Sale del menú
 	    elif opc==5:
 	    	break
