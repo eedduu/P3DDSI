@@ -25,10 +25,33 @@ def menuEmpleados(conn):
 
 			tipo = input('Introduzca el tipo del empleado ((C)abecera/(E)specialista: ')
 			
-			if (tipo == 'E') or (tipo == 'C'):
+			try:			
 				cursor.callproc("crearEmpleado", (dni, nombreApe,salario,tipo))
-			else:
-				print('Tipo de empleado no válido.')
+			except cx_Oracle.IntegrityError as error:
+				codigo = error.args[0].code
+		
+				if (codigo == 1):
+					print('ERROR: Ya existe un empleado con ese DNI')
+				elif (codigo == 2290):
+					print('ERROR: El salario debe ser positivo');
+				else:
+					print('ERROR desconocido')
+					print(error)
+			except cx_Oracle.DatabaseError as error:
+				codigo = error.args[0].code
+				if (codigo == 20101):
+					print('ERROR: Tipo de empleado no válido')
+				elif (codigo == 12899):
+					print('ERROR: El DNI/Nombre y apellidos es demasiado largo');
+				elif (codigo == 1438):
+					print('ERROR: El salario no está en el rango establecido');
+				else:
+					print('ERROR desconocido')
+					print(error)
+			except Error as error:
+				print('ERROR desconocido')
+				print(error)
+
 
 		elif opc==2:
 			dni = input('DNI del empleado: ')
