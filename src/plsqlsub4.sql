@@ -7,6 +7,8 @@ BEGIN
 	nuevoID := nuevoID + 1 ;
 	INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, 'false', TO_DATE( fecha,'YYYY-MM-DD'), dniPa, dniCab ); 
 	COMMIT;
+	WHEN NO_DATA_FOUND THEN 
+		DBMS_OUTPUT.PUT_LINE("No hay un empleado con ese identificador");
 END pedirConsultaCab;
 /
 
