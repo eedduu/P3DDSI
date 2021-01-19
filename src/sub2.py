@@ -34,7 +34,19 @@ def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     try:
         cursor.callproc('Historiales.modHistorial',[dni,telefono,pya,gs])
     except cx_Oracle.IntegrityError as error:
-        print('...Error modificando el historial:\n\t{}\n'.format(error))
+        print('ERROR: No existe un historial con ese DNI')
+    except cx_Oracle.DatabaseError as error:
+	codigo = error.args[0].code
+	if (codigo == 20101):
+	    print('ERROR: Grupo sanguíneo no válido')
+	elif (codigo == 12899):
+	    print('ERROR: Mucho texto en el DNI o en patologías y algergias');
+	else:
+	    print('ERROR desconocido')
+	    print(error)
+    except Error as error:
+	print('ERROR desconocido')
+	print(error)
 
 
 def getHistorial(conexion,dni):
@@ -43,7 +55,7 @@ def getHistorial(conexion,dni):
     try:
        cursor.callproc('Historiales.getHistorial',[dni])
     except cx_Oracle.IntegrityError as error:
-        print('...Error obteniendo el historial:\n\t{}\n'.format(error))
+        print('ERROR: No existe un historial asociado a ese DNI')
     return cursor.fetchone()
 
 
@@ -76,13 +88,28 @@ def addTratamiento(conexion):
     datos           = input('Información asociada al tratamiento: ')
     dniempleado     = input('DNI del médico que ha puesto el tratamiento: ')
 
-    fechaInicio = datetime.strptime(fechai, "YYYY-MM-DD")
-    fechaFinal = datetime.strptime(fechaf, "YYYY-MM-DD")
     if (fecha_correcta1 and fecha_correcta2):
         try:
             cursor.callproc('Historiales.addTratamiento',[idtratamiento,fechaInicio,fechaFinal,descripcion,empleado])
         except cx_Oracle.IntegrityError as error:
-            print('...Error añadiendo el tratamiento:\n\t{}\n'.format(error))
+            codigo = error.args[0].code
+	    	
+	    if (codigo == 1):
+	        print('ERROR: Ya existe un tratamiento asociado a ese código de tratamiento')
+	    else:
+	        print('ERROR desconocido')
+	        print(error)
+        except cx_Oracle.DatabaseError as error:
+	    codigo = error.args[0].code
+	    
+	    if (codigo == 12899):
+	        print('ERROR: Mucho texto en la descripcion del tratamiento');
+	    else:
+	        print('ERROR desconocido')
+	        print(error)
+        except Error as error:
+	    print('ERROR desconocido')
+	    print(error)
 
 def menuHistorial(conexion):
 
