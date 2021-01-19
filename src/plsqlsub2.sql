@@ -14,12 +14,11 @@ CREATE OR REPLACE PACKAGE BODY Historiales AS
 	PROCEDURE modHistorial(dni HistorialAsigna.DNIpaciente%type, 
 		telefono HistorialAsigna.Telefono%type, 
 		pya  HistorialAsigna.PyA%type,  
-		gs   HistorialAsigna.GS%type,
-		dniempleado   HistorialAsigna.DNIempleado%type)
+		gs   HistorialAsigna.GS%type)
  	IS 
 	BEGIN 
 		UPDATE HistorialAsigna
-		SET Telefono = telefono, PyA = pya, GS = gs, DNIempleado = dniempleado
+		SET Telefono = telefono, PyA = pya, GS = gs
 		WHERE DNIpaciente = dni; 
 		COMMIT;
    	END modHistorial; 

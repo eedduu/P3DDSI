@@ -32,7 +32,7 @@ def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     cursor = conexion.cursor()
 
     try:
-        cursor.callproc('Historiales.modHistorial',[dni,telefono,pya,gs,dniempleado])
+        cursor.callproc('Historiales.modHistorial',[dni,telefono,pya,gs])
     except cx_Oracle.IntegrityError as error:
         print('...Error modificando el historial:\n\t{}\n'.format(error))
 
@@ -63,15 +63,15 @@ def addTratamiento(conexion):
 	fecha_correcta1 = False
 	
     print('Fecha de fin del tratamiento: \n')
-	 dia = int(input('   Día: '))
-	 mes = int(input('   Mes: '))
-	 anyo = int(input('   Año: '))
-	 fecha_correcta2 = True
-	 try:
-	     fechaFinal = datetime.date(anyo,mes,dia).__str__()
-	 except:
-	     print("Fecha inválida.")
-	     fecha_correcta2 = False
+    dia = int(input('   Día: '))
+    mes = int(input('   Mes: '))
+    anyo = int(input('   Año: '))
+    fecha_correcta2 = True
+    try:
+        fechaFinal = datetime.date(anyo,mes,dia).__str__()
+    except:
+	 print("Fecha inválida.")
+	 fecha_correcta2 = False
     
     datos           = input('Información asociada al tratamiento: ')
     dniempleado     = input('DNI del médico que ha puesto el tratamiento: ')
@@ -115,7 +115,6 @@ def menuHistorial(conexion):
 			telefono    = int(input('Teléfono si se quiere modificar: '))
 			pya         = input('Patologías y alergias si se quieren modificar: ')
 			gs          = input('Grupo sanguíneo si se quieren modficar: ')
-			dniempleado = input('DNI del médico de cabecera si se quiere modificar: ') 
 			print('Si quiere dejarlo como esta pulse intro')
                 
 			if (dni != None):   
@@ -127,10 +126,8 @@ def menuHistorial(conexion):
 				pya = historialant[2]
 			if (gs == None):
 				gs = historialant[3]
-			if (dniempleado == None):
-				dniempleado == historialant[4]
 				
-			modHistorial(conexion,dni,telefono,pya,gs,dniempleado)
+			modHistorial(conexion,dni,telefono,pya,gs)
 
 			else:
 				print('Introduzca el DNI asociado al historial que se quiere modificar')
