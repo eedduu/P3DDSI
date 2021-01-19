@@ -5,7 +5,7 @@ def addHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     cursor = conexion.cursor()
 
     try:
-        cursor.callproc('addHistorial',[dni,telefono,pya,gs,dniempleado])
+        cursor.callproc('addHistorial',(dni,telefono,pya,gs,dniempleado))
     except cx_Oracle.IntegrityError as error:
         codigo = error.args[0].code
 		
@@ -32,7 +32,7 @@ def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     cursor = conexion.cursor()
 
     try:
-        cursor.callproc('modHistorial',[dni,telefono,pya,gs])
+        cursor.callproc('modHistorial',(dni,telefono,pya,gs))
     except cx_Oracle.IntegrityError as error:
         print('ERROR: No existe un historial con ese DNI')
     except cx_Oracle.DatabaseError as error:
@@ -53,7 +53,7 @@ def getHistorial(conexion,dni):
     cursor = conexion.cursor()
 
     try:
-       cursor.callproc('getHistorial',[dni])
+       cursor.callproc('getHistorial',(dni))
     except cx_Oracle.IntegrityError as error:
         print('ERROR: No existe un historial asociado a ese DNI')
     return cursor.fetchone()
@@ -90,7 +90,7 @@ def addTratamiento(conexion):
 
     if (fecha_correcta1 and fecha_correcta2):
         try:
-            cursor.callproc('addTratamiento',[idtratamiento,fechaInicio,fechaFinal,descripcion,empleado])
+            cursor.callproc('addTratamiento',(idtratamiento,fechaInicio,fechaFinal,descripcion,empleado))
         except cx_Oracle.IntegrityError as error:
             codigo = error.args[0].code
 	    	
