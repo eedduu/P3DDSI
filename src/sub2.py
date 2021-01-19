@@ -7,7 +7,25 @@ def addHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     try:
         cursor.callproc('Historiales.addHistorial',[dni,telefono,pya,gs,dniempleado])
     except cx_Oracle.IntegrityError as error:
-        print('...Error añadiendo el nuevo historial:\n\t{}\n'.format(error))
+        codigo = error.args[0].code
+		
+	if (codigo == 1):
+	    print('ERROR: Ya existe un historial asociado a ese DNI')
+	else:
+	    print('ERROR desconocido')
+	    print(error)
+    except cx_Oracle.DatabaseError as error:
+	codigo = error.args[0].code
+	if (codigo == 20101):
+	    print('ERROR: Grupo sanguíneo no válido')
+	elif (codigo == 12899):
+	    print('ERROR: Mucho texto en el DNI o en patologías y algergias');
+	else:
+	    print('ERROR desconocido')
+	    print(error)
+    except Error as error:
+	print('ERROR desconocido')
+	print(error)
 
 
 def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
@@ -29,15 +47,42 @@ def getHistorial(conexion,dni):
     return cursor.fetchone()
 
 
-def addTratamiento(conexion,idtratamiento,fechai,fechaf,descripcion,dnipaciente):
+def addTratamiento(conexion):
     cursor = conexion.cursor()
+    idtratamiento   = input('ID del tratamiento: ')
     
+    print('Fecha de inicio del tratamiento: \n')
+    dia = int(input('   Día: '))
+    mes = int(input('   Mes: '))
+    anyo = int(input('   Año: '))
+    fecha_correcta1 = True
+    try:
+    	fechaInicio = datetime.date(anyo,mes,dia).__str__()
+    except:
+	print("Fecha inválida.")
+	fecha_correcta1 = False
+	
+    print('Fecha de fin del tratamiento: \n')
+	 dia = int(input('   Día: '))
+	 mes = int(input('   Mes: '))
+	 anyo = int(input('   Año: '))
+	 fecha_correcta2 = True
+	 try:
+	     fechaFinal = datetime.date(anyo,mes,dia).__str__()
+	 except:
+	     print("Fecha inválida.")
+	     fecha_correcta2 = False
+    
+    datos           = input('Información asociada al tratamiento: ')
+    dniempleado     = input('DNI del médico que ha puesto el tratamiento: ')
+
     fechaInicio = datetime.strptime(fechai, "YYYY-MM-DD")
     fechaFinal = datetime.strptime(fechaf, "YYYY-MM-DD")
-    try:
-        cursor.callproc('Historiales.addTratamiento',[idtratamiento,fechaInicio,fechaFinal,descripcion,dnipaciente])
-    except cx_Oracle.IntegrityError as error:
-        print('...Error añadiendo el tratamiento:\n\t{}\n'.format(error))
+    if (fecha_correcta1 and fecha_correcta2):
+        try:
+            cursor.callproc('Historiales.addTratamiento',[idtratamiento,fechaInicio,fechaFinal,descripcion,empleado])
+        except cx_Oracle.IntegrityError as error:
+            print('...Error añadiendo el tratamiento:\n\t{}\n'.format(error))
 
 def menuHistorial(conexion):
 
@@ -109,13 +154,7 @@ def menuHistorial(conexion):
 	    	
 	    # Añadir un tratamiento
 		elif opc==4:
-			idtratamiento = input('ID del medicamento: ')
-			fechai = input('Fecha de inicio del tratamiento: ')
-			fechaf = input('Fecha de final del tratamiento: ')
-			datos  = input('Información asociada al tratamiento: ')
-			dniempleado = input('DNI del médico que ha puesto el tratamiento: ')
-
-			addTratamiento(conexion,idtratamiento,fechai,fechaf,datos,dniempleado)
+			addTratamiento(conexion)
 
 	    # Sale del menú
 		elif opc==5:
