@@ -27,6 +27,13 @@ sqlscript.run_sql_script(conn, "plsqlsub1",
                           edition_password="1234",
                           edition_name="bof")
 
+sqlscript.run_sql_script(conn, "plsqlsub2",
+                          main_user= "yo",
+                          main_password="1234",
+                          edition_user="tu",
+                          edition_password="1234",
+                          edition_name="bof")
+
 sqlscript.run_sql_script(conn, "plsqlsub4",
                           main_user= "yo",
                           main_password="1234",
