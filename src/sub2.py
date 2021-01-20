@@ -7,26 +7,12 @@ def addHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     try:
         cursor.callproc('addHistorial',(dni,telefono,pya,gs,dniempleado))
     except cx_Oracle.IntegrityError as error:
-        codigo = error.args[0].code
-		
-        if (codigo == 1):
-            print('ERROR: Ya existe un historial asociado a ese DNI')
-        else:
-            print('ERROR desconocido')
-            print(error)
+        print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:
-        codigo = error.args[0].code
-        if (codigo == 20101):
-            print('ERROR: Grupo sanguíneo no válido')
-        elif (codigo == 12899):
-            print('ERROR: Mucho texto en el DNI o en patologías y algergias');
-        else:
-            print('ERROR desconocido')
-            print(error)
+        print( (error.args[0].message).split('\n')[0] )
     except Error as error:
         print('ERROR desconocido')
         print(error)
-
 
 def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     cursor = conexion.cursor()
@@ -34,16 +20,9 @@ def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
     try:
         cursor.callproc('modHistorial',(dni,telefono,pya,gs))
     except cx_Oracle.IntegrityError as error:
-        print('ERROR: No existe un historial con ese DNI')
+        print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:
-        codigo = error.args[0].code
-        if (codigo == 20101):
-            print('ERROR: Grupo sanguíneo no válido')
-        elif (codigo == 12899):
-            print('ERROR: Mucho texto en el DNI o en patologías y algergias');
-        else:
-            print('ERROR desconocido')
-            print(error)
+        print( (error.args[0].message).split('\n')[0] )
     except Error as error:
         print('ERROR desconocido')
         print(error)
@@ -53,11 +32,15 @@ def getHistorial(conexion,dni):
     cursor = conexion.cursor()
 
     try:
-       cursor.callproc('getHistorial',(dni))
+        cursor.callproc('getHistorial',(dni))
+        return cursor.fetchone()
     except cx_Oracle.IntegrityError as error:
-        print('ERROR: No existe un historial asociado a ese DNI')
-    return cursor.fetchone()
-
+        print( (error.args[0].message).split('\n')[0] )
+    except cx_Oracle.DatabaseError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except Error as error:
+        print('ERROR desconocido')
+        print(error)
 
 def addTratamiento(conexion):
     cursor = conexion.cursor()
@@ -92,21 +75,9 @@ def addTratamiento(conexion):
         try:
             cursor.callproc('addTratamiento',(idtratamiento,fechaInicio,fechaFinal,descripcion,empleado))
         except cx_Oracle.IntegrityError as error:
-            codigo = error.args[0].code
-	    	
-            if (codigo == 1):
-                print('ERROR: Ya existe un tratamiento asociado a ese código de tratamiento')
-            else:
-                print('ERROR desconocido')
-                print(error)
+            print( (error.args[0].message).split('\n')[0] )
         except cx_Oracle.DatabaseError as error:
-            codigo = error.args[0].code
-	    
-            if (codigo == 12899):
-                print('ERROR: Mucho texto en la descripcion del tratamiento');
-            else:
-                print('ERROR desconocido')
-                print(error)
+            print( (error.args[0].message).split('\n')[0] )
         except Error as error:
             print('ERROR desconocido')
             print(error)
