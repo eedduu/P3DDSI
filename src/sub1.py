@@ -55,20 +55,86 @@ def menuEmpleados(conn):
 
 		elif opc==2:
 			dni = input('DNI del empleado: ')
-			cursor.callproc("borrarEmpleado", [dni])
-	    	
+
+			try:
+				cursor.callproc("borrarEmpleado", [dni])
+			except cx_Oracle.DatabaseError as error:
+				codigo = error.args[0].code
+				
+				if (codigo == 20100):
+					print('ERROR: No hay ningún empleado con tal DNI')
+				else:
+					print('ERROR desconocido')
+					print(error)
+			except Error as error:
+				print('ERROR desconocido')
+				print(error)
+
+
 		elif opc==3:
 			dni = input('DNI del empleado a modificar: ')
 			nombreApe = input('Introduzca el nombre y apellidos del empleado: ')
 			salario = float(input('Introduzca el salario del empleado: '))
 
-			cursor.callproc("modificarEmpleado", (dni, nombreApe,salario))
+			try:
+				cursor.callproc("modificarEmpleado", (dni, nombreApe,salario))
+			except cx_Oracle.DatabaseError as error:
+				codigo = error.args[0].code
+				
+				if (codigo == 20100):
+					print('ERROR: No hay ningún empleado con tal DNI')
+				elif (codigo == 12899):
+					print('ERROR: El nombre es demasiado largo.')
+				elif (codigo ==1438):
+					print('ERROR: El salario no está en el rango establecido');
+				elif (codigo == 2290):
+					print('ERROR: El salario debe ser positivo');
+				else:
+					print('ERROR desconocido')
+					print(error)
+			except cx_Oracle.IntegrityError as error:
+				codigo = error.args[0].code
+		
+				if (codigo == 2290):
+					print('ERROR: El salario debe ser positivo');
+				else:
+					print('ERROR desconocido')
+					print(error)
+			except Error as error:
+				print('ERROR desconocido')
+				print(error)
+
 
 		elif opc==4:
 			dniEmp = input('DNI del empleado (médico de cabecera): ')
 			dniHis = input('DNI del paciente (historial de salud): ')
 
-			cursor.callproc("asignarMedicoCabHistorial", (dniEmp, dniHis))
+			try:
+				cursor.callproc("asignarMedicoCabHistorial", (dniEmp, dniHis))
+			except cx_Oracle.DatabaseError as error:
+				codigo = error.args[0].code
+				if (codigo == 20141):
+					print('ERROR: Quedan consultas pendientes con el médico de cabecera.')
+				elif (codigo == 20142):
+					print('ERROR: Mismo médico que antes')
+				elif (codigo == 1403):
+					print('ERROR: No existe tal paciente')
+				elif (codigo == 2291):
+					print('ERROR: No existe tal médico de cabecera.')
+				else:
+					print('ERROR desconocido')
+					print(error)
+
+			except cx_Oracle.IntegrityError as error:
+				if (codigo == 2291):
+					print('ERROR: No existe tal médico de cabecera.')
+				else:
+					print('ERROR desconocido')
+					print(error)
+
+			except Error as error:
+				print('ERROR desconocido')
+				print(error)			
 
 		# Sale del menú
 		elif opc==5:
