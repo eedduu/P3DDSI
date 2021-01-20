@@ -28,26 +28,9 @@ def menuEmpleados(conn):
 			try:			
 				cursor.callproc("crearEmpleado", (dni, nombreApe,salario,tipo))
 			except cx_Oracle.IntegrityError as error:
-				codigo = error.args[0].code
-		
-				if (codigo == 1):
-					print('ERROR: Ya existe un empleado con ese DNI')
-				elif (codigo == 2290):
-					print('ERROR: El salario debe ser positivo');
-				else:
-					print('ERROR desconocido')
-					print(error)
+				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
-				codigo = error.args[0].code
-				if (codigo == 20101):
-					print('ERROR: Tipo de empleado no válido')
-				elif (codigo == 12899):
-					print('ERROR: El DNI/Nombre y apellidos es demasiado largo');
-				elif (codigo == 1438):
-					print('ERROR: El salario no está en el rango establecido');
-				else:
-					print('ERROR desconocido')
-					print(error)
+				print( (error.args[0].message).split('\n')[0] )
 			except Error as error:
 				print('ERROR desconocido')
 				print(error)
@@ -58,18 +41,13 @@ def menuEmpleados(conn):
 
 			try:
 				cursor.callproc("borrarEmpleado", [dni])
+			except cx_Oracle.IntegrityError as error:
+				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
-				codigo = error.args[0].code
-				
-				if (codigo == 20100):
-					print('ERROR: No hay ningún empleado con tal DNI')
-				else:
-					print('ERROR desconocido')
-					print(error)
+				print( (error.args[0].message).split('\n')[0] )
 			except Error as error:
 				print('ERROR desconocido')
 				print(error)
-
 
 		elif opc==3:
 			dni = input('DNI del empleado a modificar: ')
@@ -78,28 +56,10 @@ def menuEmpleados(conn):
 
 			try:
 				cursor.callproc("modificarEmpleado", (dni, nombreApe,salario))
-			except cx_Oracle.DatabaseError as error:
-				codigo = error.args[0].code
-				
-				if (codigo == 20100):
-					print('ERROR: No hay ningún empleado con tal DNI')
-				elif (codigo == 12899):
-					print('ERROR: El nombre es demasiado largo.')
-				elif (codigo ==1438):
-					print('ERROR: El salario no está en el rango establecido');
-				elif (codigo == 2290):
-					print('ERROR: El salario debe ser positivo');
-				else:
-					print('ERROR desconocido')
-					print(error)
 			except cx_Oracle.IntegrityError as error:
-				codigo = error.args[0].code
-		
-				if (codigo == 2290):
-					print('ERROR: El salario debe ser positivo');
-				else:
-					print('ERROR desconocido')
-					print(error)
+				print( (error.args[0].message).split('\n')[0] )
+			except cx_Oracle.DatabaseError as error:
+				print( (error.args[0].message).split('\n')[0] )
 			except Error as error:
 				print('ERROR desconocido')
 				print(error)
@@ -111,30 +71,13 @@ def menuEmpleados(conn):
 
 			try:
 				cursor.callproc("asignarMedicoCabHistorial", (dniEmp, dniHis))
-			except cx_Oracle.DatabaseError as error:
-				codigo = error.args[0].code
-				if (codigo == 20141):
-					print('ERROR: Quedan consultas pendientes con el médico de cabecera.')
-				elif (codigo == 20142):
-					print('ERROR: Mismo médico que antes')
-				elif (codigo == 1403):
-					print('ERROR: No existe tal paciente')
-				elif (codigo == 2291):
-					print('ERROR: No existe tal médico de cabecera.')
-				else:
-					print('ERROR desconocido')
-					print(error)
-
 			except cx_Oracle.IntegrityError as error:
-				if (codigo == 2291):
-					print('ERROR: No existe tal médico de cabecera.')
-				else:
-					print('ERROR desconocido')
-					print(error)
-
+				print( (error.args[0].message).split('\n')[0] )
+			except cx_Oracle.DatabaseError as error:
+				print( (error.args[0].message).split('\n')[0] )
 			except Error as error:
 				print('ERROR desconocido')
-				print(error)			
+				print(error)		
 
 		# Sale del menú
 		elif opc==5:
