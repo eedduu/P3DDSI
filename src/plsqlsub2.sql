@@ -27,14 +27,14 @@ BEGIN
 	
 	EXCEPTION
 		WHEN dni_duplicado THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI ya existe');
-			RAISE_APPLICATION_ERROR (-20100, 'ERROR, el historial con ese DNU ya existe');
+			DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI ya existe');
+			RAISE_APPLICATION_ERROR (-1, 'ERROR, el historial con ese DNU ya existe');
 		WHEN gs_invalido THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, el grupo sanguineo introducido es invalido');
+			DBMS_OUTPUT.PUT_LINE('ERROR, el grupo sanguineo introducido es invalido');
 			RAISE_APPLICATION_ERROR (-20100, 'ERROR, el grupo sanguineo introducido es invalido');
 		WHEN pya_invalido THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto introducido en patologias y algergias');
-			RAISE_APPLICATION_ERROR (-20100, 'ERROR, mucho texto introducido en patologias y algergias');	
+			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto introducido en patologias y algergias');
+			RAISE_APPLICATION_ERROR (-12899, 'ERROR, mucho texto introducido en patologias y algergias');	
 END addHistorial; 
 /
 
@@ -57,11 +57,11 @@ BEGIN
 
 	EXCEPTION
 		WHEN no_existe THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
-			RAISE_APPLICATION_ERROR (-20100, 'ERROR, el historial con ese DNI no existe');
+			DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
+			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el historial con ese DNI no existe');
 		WHEN mucho_texto THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en patologias y algergias');
-			RAISE_APPLICATION_ERROR (-20100, 'ERROR, mucho texto en patologias y algergias');
+			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en patologias y algergias');
+			RAISE_APPLICATION_ERROR (-12899, 'ERROR, mucho texto en patologias y algergias');
 END modHistorial; 
 /
 
@@ -76,8 +76,8 @@ BEGIN
 
 	EXCEPTION
 		WHEN no_existe THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
-			RAISE_APPLICATION_ERROR (-20100, 'ERROR, el historial con ese DNI no existe');
+			DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
+			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el historial con ese DNI no existe');
 END getHistorial; 
 /
 
@@ -101,10 +101,10 @@ BEGIN
 
 	EXCEPTION
 		WHEN no_existe THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, el tratamiento o el paciente no existen');
-			RAISE_APPLICATION_ERROR (-20100, 'ERROR, el tratamiento o el paciente no existen');
+			DBMS_OUTPUT.PUT_LINE('ERROR, el tratamiento o el paciente no existen');
+			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el tratamiento o el paciente no existen');
 		WHEN mucho_texto THEN
-         DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
-			RAISE_APPLICATION_ERROR (-20100, 'ERROR, muco texto en la descripcion del tratamiento');
+			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
+			RAISE_APPLICATION_ERROR (-12899, 'ERROR, muco texto en la descripcion del tratamiento');
 END addTratamiento; 
 
