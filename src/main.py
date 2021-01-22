@@ -3,6 +3,7 @@ import config
 import creacion_tablas
 import sub1
 import sub2
+import sub3
 import sub4
 import sqlscript
 
@@ -28,6 +29,13 @@ sqlscript.run_sql_script(conn, "plsqlsub1",
                           edition_name="bof")
 
 sqlscript.run_sql_script(conn, "plsqlsub2",
+                          main_user= "yo",
+                          main_password="1234",
+                          edition_user="tu",
+                          edition_password="1234",
+                          edition_name="bof")
+
+sqlscript.run_sql_script(conn, "plsqlsub3",
                           main_user= "yo",
                           main_password="1234",
                           edition_user="tu",
@@ -64,7 +72,7 @@ while True:
         sub2.menuHistorial(conn)
     # Gestión de inventario del hospital
     elif opc==3:
-    	print('Funcionalidad en construccion D:')
+    	sub3.menuInventario(conn)
     # Gestion de consultas
     elif opc==4:
     	sub4.menuConsulta(conn)
@@ -77,7 +85,7 @@ while True:
 
 
 
-# Nos desconectamos 
+# Nos desconectamos
 print('Desconectandose de la bases de datos...')
 conn.close()
 print('Se ha desconectado satisfactoriamente.\n')

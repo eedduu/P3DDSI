@@ -1,23 +1,94 @@
 import cx_Oracle
 
-
-def consultarStockMed(conexion, idMed)
+def consultarStockMed(conexion, idMed):
     cursor = conexion.cursor()
 
-    cursor.execute('''SELECT CantidadMed FROM Medicamento where IDmedicameto = ?''', idMed)
-    cantidad = cursor.fetchone()
-    print ('La cantidad del medicamento con id ? es ?', idMed, cantidad)
+    try:
+        cursor.callproc('consultarStock',(idMed))
+    except cx_Oracle.IntegrityError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except cx_Oracle.DatabaseError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except Error as error:
+        print('ERROR desconocido')
+        print(error)
+
+def reservar_maquinas(conexion, idmaq, idconsulta):
+    cursor = conexion.cursor()
+
+    try:
+        cursor.callproc('reservar_maquinas',(idmaq, idconsulta))
+    except cx_Oracle.IntegrityError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except cx_Oracle.DatabaseError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except Error as error:
+        print('ERROR desconocido')
+        print(error)
 
 
-#Disparador en el 3.2 para que insertemos una maquina en una cita y comprueba que esa maquina no esté en otra cita
-#Lo dejo planteado
+def asignarMedicamentos(conexion, idmed, idtrat, cantidad):
+    cursor = conexion.cursor()
 
-argumentos: idmaq, idconsul
-REATE OR REPLACE TRIGGER comprobar_maquinas BEFORE INSERT ON Reserva FOR EACH ROW
-BEGIN
-    mifecha= idconsulta.fecha
-    SELECT idconsultas FROM Consultas where fecha=mifecha
-    Select * From Reservas where idconsulta=idconsultas && idmaquina=idmaq
-    if cursor == none => la maquina no está cogida
+    try:
+        cursor.callproc('asignar_med',(idmed, idtrat, cantidad))
+    except cx_Oracle.IntegrityError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except cx_Oracle.DatabaseError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except Error as error:
+        print('ERROR desconocido')
+        print(error)
 
-END
+def añadirStock(conexion, idmed, cantidad):
+    cursor = conexion.cursor()
+
+    try:
+        cursor.callproc('añadirStock',(idmed, cantidad))
+    except cx_Oracle.IntegrityError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except cx_Oracle.DatabaseError as error:
+        print( (error.args[0].message).split('\n')[0] )
+    except Error as error:
+        print('ERROR desconocido')
+        print(error)
+
+
+def menuInventario(conexion):
+    while True:
+        # Opción del menú
+       print('##################################################')
+       print('# Escoge una opción:                             #')
+       print('# 1.Consultar stock de un medicamento            #')
+       print('# 2.Reservar maquinas para una consutla          #')
+       print('# 3.Asignar medicamentos a un tratamiento        #')
+       print('# 4.Añadir stock a un medicamento ya existente   #')
+       print('# 5.Salir del subsistema                         #')
+       print('##################################################')
+       opc = int(input('\n Entrada: '))
+
+
+
+
+       if opc==1:
+           idMed = input('ID del medicamento: ')
+           consultarStockMed(conexion, idMed)
+
+       elif opc==2:
+           idmaquina = input('ID de la maquina')
+           idconsulta = input('ID de la consulta')
+           reservar_maquinas(conexion, idmaquina, idconsulta)
+
+       elif opc==3:
+           idmed= input('ID del medicamento')
+           idtrat= input('ID del tratamiento')
+           cantidad=input('Cantidad del medicamento')
+           asignarMedicamentos(conexion, idmed, idtrat, cantidad)
+
+       elif opc==4:
+           idmed = input('ID del medicamento')
+           cantidad = input('Cantidad del medicamento')
+           añadirStock(conexion, idmed, cantidad)
+
+       else:
+           print('Opcion no valida, vuelva a elegir')
