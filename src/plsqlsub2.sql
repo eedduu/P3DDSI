@@ -6,11 +6,11 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE addHistorial(dni HistorialAsigna.DNIpaciente%type, 
-	telefono HistorialAsigna.Telefono%type, 
-	pya  HistorialAsigna.PyA%type,  
-	gs   HistorialAsigna.GS%type,
-	dniempleado   HistorialAsigna.DNIempleado%type)
+CREATE OR REPLACE PROCEDURE addHistorial(dnin HistorialAsigna.DNIpaciente%type, 
+	telefonon HistorialAsigna.Telefono%type, 
+	pyan  HistorialAsigna.PyA%type,  
+	gsn   HistorialAsigna.GS%type,
+	dniempleadon   HistorialAsigna.DNIempleado%type)
  IS 
 dni_duplicado EXCEPTION;
 gs_invalido EXCEPTION;
@@ -22,7 +22,7 @@ PRAGMA EXCEPTION_INIT(pya_invalido, -12899);
 
 BEGIN 
 	INSERT INTO HistorialAsigna (DNIpaciente,Telefono,PyA,GS,DNIempleado) 
-	VALUES(dni, telefono, pya, gs, dniempleado);
+	VALUES(dnin, telefonon, pyan, gsn, dniempleadon);
 	COMMIT; 
 	
 	EXCEPTION
@@ -39,9 +39,9 @@ END addHistorial;
 /
 
 CREATE OR REPLACE PROCEDURE modHistorial(dni HistorialAsigna.DNIpaciente%type, 
-	telefono HistorialAsigna.Telefono%type, 
-	pya  HistorialAsigna.PyA%type,  
-	gs   HistorialAsigna.GS%type)
+	telefonon HistorialAsigna.Telefono%type, 
+	pyan  HistorialAsigna.PyA%type,  
+	gsn   HistorialAsigna.GS%type)
 IS 
 
 no_existe  EXCEPTION;
@@ -51,7 +51,7 @@ PRAGMA EXCEPTION_INIT (no_existe, -20300);
 PRAGMA EXCEPTION_INIT (mucho_texto, -12899); 
 BEGIN 
 	UPDATE HistorialAsigna
-	SET Telefono = telefono, PyA = pya, GS = gs
+	SET Telefono = telefonon, PyA = pyan, GS = gsn
 	WHERE DNIpaciente = dni; 
 	COMMIT;
 
@@ -88,11 +88,11 @@ BEGIN
 END; 
 /
 
-CREATE OR REPLACE PROCEDURE addTratamiento (idtratamiento TratamientoTrata.IDtratamiento%type,
-	fechai TratamientoTrata.FechaI%type,
-	fechaf TratamientoTrata.FechaF%type,
-	descripcion TratamientoTrata.Descripcion%type,
-	dnipaciente TratamientoTrata.DNIpaciente%type)
+CREATE OR REPLACE PROCEDURE addTratamiento (idtratamienton TratamientoTrata.IDtratamiento%type,
+	fechain TratamientoTrata.FechaI%type,
+	fechafn TratamientoTrata.FechaF%type,
+	descripcionn TratamientoTrata.Descripcion%type,
+	dnipacienten TratamientoTrata.DNIpaciente%type)
 IS 
 
 no_existe EXCEPTION;
@@ -103,7 +103,7 @@ PRAGMA EXCEPTION_INIT (mucho_texto, -12899);
 
 BEGIN 
 	INSERT INTO TratamientoTrata (IDtratamiento, FechaI, FechaF, Descripcion, DNIpaciente)
-	VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente);
+	VALUES (idtratamienton, fechain, fechafn, descripcionn, dnipacienten);
 	COMMIT; 
 
 	EXCEPTION

@@ -34,12 +34,7 @@ def getHistorial(conexion,dni):
     try:
         cursor.execute("select * from HistorialAsigna where DNIpaciente = (:1)", [dni])
         row = cursor.fetchone()
-        print('DNI: ',row[0])
-        print('Telefono',row[1])
-        print('Patologías y alergías: ',row[2])
-        print('Grupo sanguíneo: ',row[3])
-        print('DNI médico de cabecera: ',row[4])
-        
+        return row
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:
@@ -116,29 +111,35 @@ def menuHistorial(conexion):
 	    # Modificación de un historial
 		elif opc==2:
 			dni         = input('DNI del paciente cuyo historial se quiere modificar: ')
-			telefono    = int(input('Teléfono si se quiere modificar: '))
+			telefono    = input('Teléfono si se quiere modificar: ')
 			pya         = input('Patologías y alergias si se quieren modificar: ')
 			gs          = input('Grupo sanguíneo si se quieren modficar: ')
 			print('Si quiere dejarlo como esta pulse intro')
-                
-			if (dni != None):   
-				historialant = getHistorial(conexion,dni)
-                    
-			if (telefono == None):
-				telefono = historialant[1]
-			if (pya == None):
-				pya = historialant[2]
-			if (gs == None):
-				gs = historialant[3]
-				
-			modHistorial(conexion,dni,telefono,pya,gs)
+			if (dni != ''):
+                            historialant = getHistorial(conexion,dni)
+                            if (telefono == ''):
+                                telefono = historialant[1]
+                            if (pya == ''):
+                                pya = historialant[2]
+                            if (gs == ''):
+                                gs = historialant[3]
+
+                            modHistorial(conexion,dni,telefono,pya,gs,historialant[4])
+			else:
+				print('Introduzca un DNI')
 
 	
 	    # Imprimir el historial 
 		elif opc==3:
 			dni = input('DNI del paciente asociado  al historial: ')
-			getHistorial(conexion,dni)
-			
+			row = getHistorial(conexion,dni)
+			print('DNI: ',row[0])
+			print('Telefono',row[1])
+			print('Patologías y alergías: ',row[2])
+			print('Grupo sanguíneo: ',row[3])
+			print('DNI médico de cabecera: ',row[4])
+        
+
 	    	
 	    # Añadir un tratamiento
 		elif opc==4:
