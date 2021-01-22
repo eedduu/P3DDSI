@@ -89,6 +89,8 @@ def menuInventario(conexion):
            idmed = input('ID del medicamento')
            cantidad = input('Cantidad del medicamento')
            añadirStock(conexion, idmed, cantidad)
+       elif poc==5:
+           break
 
        else:
            print('Opcion no valida, vuelva a elegir')
