@@ -9,7 +9,7 @@ BEGIN
 END consultarStock;
 
 
-
+/
 
 CREATE OR REPLACE TRIGGER comprobar_maquinas IS
 BEFORE INSERT ON Reserva FOR EACH ROW
@@ -34,7 +34,7 @@ BEGIN
 
 END comprobar_maquinas;
 
-
+/
 
 
 CREATE OR  REPLACE PROCEDURE reservar_maquinas(idmaq INTEGER, idconsulta INTEGER) IS
@@ -44,7 +44,7 @@ BEGIN
 END reservar_maquinas;
 
 
-
+/
 
 
 CREATE OR REPLACE PROCEDURE asignar_med(idmed INTEGER, idtrat INTEGER, cantidad INTEGER) IS
@@ -59,7 +59,7 @@ BEGIN
 END asignar_med;
 
 
-
+/
 
 CREATE OR REPLACE PROCEDURE añadirStock(idmed INTEGER, cantidad INTEGER)
   actual INTEGER;
@@ -69,3 +69,4 @@ BEGIN
   UPDATE Medicamento SET CantidadMed = actual WHERE IDmedicamento = idmed;
   COMMIT;
 END
+/
