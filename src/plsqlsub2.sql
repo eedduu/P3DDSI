@@ -2,7 +2,7 @@ CREATE OR REPLACE TRIGGER nuevoTratamiento
 AFTER INSERT ON TratamientoTrata
 FOR EACH ROW
 BEGIN
-	DELETE FROM TratamientoTrata WHERE DNIpaciente = new.DNIpaciente AND IDtratamiento = mew.IDtratamiento;
+	DELETE FROM TratamientoTrata WHERE DNIpaciente = :new.DNIpaciente AND IDtratamiento = :new.IDtratamiento;
 END;
 /
 
@@ -12,13 +12,13 @@ CREATE OR REPLACE PROCEDURE addHistorial(dni HistorialAsigna.DNIpaciente%type,
 	gs   HistorialAsigna.GS%type,
 	dniempleado   HistorialAsigna.DNIempleado%type)
  IS 
-dni_dupliado EXCEPTION;
+dni_duplicado EXCEPTION;
 gs_invalido EXCEPTION;
 pya_invalido EXCEPTION;
 
 PRAGMA EXCEPTION_INIT(dni_duplicado, -1);
 PRAGMA EXCEPTION_INIT(gs_invalido, -20101);
-PRAGMA EXCEPTION_INIT(pya_invalido, -12899;
+PRAGMA EXCEPTION_INIT(pya_invalido, -12899);
 
 BEGIN 
 	INSERT INTO HistorialAsigna (DNIpaciente,Telefono,PyA,GS,DNIempleado) 
@@ -67,18 +67,25 @@ END modHistorial;
 
 CREATE OR REPLACE PROCEDURE getHistorial (dni HistorialAsigna.DNIpaciente%type)
 IS 
-no_existe EXCEPTION;
+r_pya HistorialAsigna.PyA%type;
+r_gs HistorialAsigna.GS%type;
+r_telefono HistorialAsigna.Telefono%type;
+r_dniempleado HistorialAsigna.DNIempleado%type;
 
+CURSOR historial IS SELECT Telefono, PyA, GS, DNIempleado FROM HistorialAsigna WHERE DNIpaciente = dni; 
+no_existe EXCEPTION;
 PRAGMA EXCEPTION_INIT (no_existe, -20300);
 
 BEGIN 
-	SELECT * FROM HistorialAsigna WHERE DNIpaciente = dni; 
-
-	EXCEPTION
+	OPEN historial;
+	FETCH historial into r_telefono, r_pya, r_gs, r_dniempleado; 
+    dbms_output.put_line('Telefono: ' || telefono || ' Grupo Sanguineo: '|| gs || 'DNI medico cabecera: ' || dniempleado );
+    CLOSE historial;
+    EXCEPTION
 		WHEN no_existe THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
 			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el historial con ese DNI no existe');
-END getHistorial; 
+END; 
 /
 
 CREATE OR REPLACE PROCEDURE addTratamiento (idtratamiento TratamientoTrata.IDtratamiento%type,
@@ -96,7 +103,7 @@ PRAGMA EXCEPTION_INIT (mucho_texto, -12899);
 
 BEGIN 
 	INSERT INTO TratamientoTrata (IDtratamiento, FechaI, FechaF, Descripcion, DNIpaciente)
-	VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente)
+	VALUES (idtratamiento, fechai, fechaf, descripcion, dnipaciente);
 	COMMIT; 
 
 	EXCEPTION

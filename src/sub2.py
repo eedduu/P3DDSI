@@ -33,7 +33,7 @@ def getHistorial(conexion,dni):
 
     try:
         cursor.callproc('getHistorial',(dni))
-        return cursor.fetchone()
+        
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:
@@ -131,19 +131,8 @@ def menuHistorial(conexion):
 	    # Imprimir el historial 
 		elif opc==3:
 			dni = input('DNI del paciente asociado  al historial: ')
-			historial = getHistorial(conexion,dni)
-			if (historial != None):
-				telefono    = historial[1]
-				pya         = historial[2]
-				gs          = historial[3]
-				dniempleado = historial[4]
-
-				print('DNI: ',dni)
-				print('Teléfono: ',str(telefono))
-				print('Patologías y alergias: ',pya)
-				print('DNI del médico de cabecera: ',dniempleado)
-			else:
-				print('Error con DNI, por favor introduzcalo de nuevo.')
+			getHistorial(conexion,dni)
+			
 	    	
 	    # Añadir un tratamiento
 		elif opc==4:
