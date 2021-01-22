@@ -11,8 +11,9 @@ END consultarStock;
 
 /
 
-CREATE OR REPLACE TRIGGER comprobar_maquinas IS
+CREATE OR REPLACE TRIGGER comprobar_maquinas
 BEFORE INSERT ON Reserva FOR EACH ROW
+DECLARE
   mifecha DATE;
   miconsulta INTEGER;
   mimaquina INTEGER;

@@ -114,4 +114,4 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
 			RAISE_APPLICATION_ERROR (-12899, 'ERROR, muco texto en la descripcion del tratamiento');
 END addTratamiento; 
-
+/
