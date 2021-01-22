@@ -32,7 +32,13 @@ def getHistorial(conexion,dni):
     cursor = conexion.cursor()
 
     try:
-        cursor.callproc('getHistorial',(dni))
+        cursor.execute("select * from HistorialAsigna where DNIpaciente = (:1)", [dni])
+        row = cursor.fetchone()
+        print('DNI: ',row[0])
+        print('Telefono',row[1])
+        print('Patologías y alergías: ',row[2])
+        print('Grupo sanguíneo: ',row[3])
+        print('DNI médico de cabecera: ',row[4])
         
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
