@@ -1,15 +1,24 @@
 CREATE OR REPLACE PROCEDURE pedirConsultaCab(fecha varchar2, dniPa varchar2) IS 
 	dniCab VARCHAR2(9);
 	nuevoID INTEGER;
+	
+	fechainvalida EXCEPTION;
+	
+	PRAGMA EXCEPTION_INIT (fechainvalida, -20010);
 BEGIN 
 	SELECT DNIempleado INTO dniCab FROM HistorialAsigna WHERE DNIpaciente = dniPa ;
 	SELECT IDconsulta INTO nuevoID FROM ConsultaPideRealiza WHERE IDconsulta >= ALL ( SELECT IDconsulta FROM ConsultaPideRealiza );
 	nuevoID := nuevoID + 1 ;
+	IF( SYSDATE > TO_DATE( fecha,'YYYY-MM-DD') ) THEN
+		RAISE_APPLICATION_ERROR (-20010, 'Fecha anterior al dia actual');
+	END IF;
 	INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, 'false', TO_DATE( fecha,'YYYY-MM-DD'), dniPa, dniCab ); 
 	COMMIT;
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
-		RAISE_APPLICATION_ERROR (-20001, 'Sin Datos');
+		RAISE_APPLICATION_ERROR (-20001, 'DNI incorrecto');
+	WHEN fechainvalida THEN
+		RAISE_APPLICATION_ERROR (-20010, 'Fecha anterior al dia actual');
 	WHEN OTHERS THEN
 		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END pedirConsultaCab;
