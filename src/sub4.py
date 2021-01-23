@@ -21,11 +21,14 @@ def menuConsulta(conn):
 	
 		# Pedir consulta
 		if opc==1:
-			dni = input('DNI del paciente: ')
+			dni = input('	DNI del paciente: ')
 			dia = int(input('   Día: '))
 			mes = int(input('   Mes: '))
 			anyo = int(input('   Año: '))
 			fecha_correcta = True
+			
+			
+			
 			try:
 				fecha = datetime.date(anyo,mes,dia).__str__()
 			except:
