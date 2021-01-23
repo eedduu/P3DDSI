@@ -1,61 +1,95 @@
-CREATE OR REPLACE PROCEDURE consultarStock(idmed int) IS
-
+create or replace PROCEDURE consultarStock(idMed int) IS
   cantidad int;
 
 BEGIN
-  SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idmed;
-  DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idmed || ' es : ' || cantidad);
-
+  SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idMed;
+  DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idMed || ' es : ' || cantidad);
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('ERROR, argumentos no válidos');
+			RAISE_APPLICATION_ERROR (-20303, 'ERROR, argumentos no validos');
 END consultarStock;
 /
 
-CREATE OR REPLACE TRIGGER comprobar_maquinas
-BEFORE INSERT ON Reserva
+create or replace TRIGGER comprobar_maquinas
+BEFORE INSERT ON Reserva FOR EACH ROW
 DECLARE
   mifecha DATE;
   miconsulta INTEGER;
   mimaquina INTEGER;
-  cursor consultas IS SELECT * FROM Reserva WHERE IDmaquina = new.IDmaquina;
-  fila CONSULTAPIDEREALIZA%ROWTYPE;
+  abortar BOOLEAN;
+  cursor consultas IS SELECT * FROM ConsultaPideRealiza JOIN Reserva ON ConsultaPideRealiza.IDconsulta=Reserva.IDconsulta;
+  ocupada EXCEPTION;
 BEGIN
-  miconsulta:= new.IDconsulta;
-  mimaquina:= new.IDmaquina;
-  SELECT Fecha INTO mifecha FROM ConsultaPideRealiza WHERE IDconsulta = miconsulta;
-  OPEN consultas;
-  FETCH consultas INTO fila;
-  WHILE consultas%found LOOP
-    IF(fila.Fecha = mifecha) THEN
-      RAISE_APPLICATION_ERROR(-20000, 'Maquina ya reservada');
+  miconsulta:= :new.IDconsulta;
+  mimaquina:= :new.IDmaquina;
+  SELECT Fecha INTO mifecha FROM ConsultaPideRealiza WHERE IDconsulta=miconsulta;
+  abortar:= false;
+  FOR elem IN consultas LOOP
+    IF(elem.Fecha = mifecha AND elem.IDmaquina = mimaquina) THEN
+      abortar:=true;
     END IF;
-    FETCH consultas INTO fila;
   END LOOP;
-  CLOSE consultas;
+  IF (abortar) THEN
+    DBMS_OUTPUT.PUT_LINE('ERROR, maquina ya reservada para otra consulta');
+    RAISE_APPLICATION_ERROR (-20305, 'Error al reservar maquina');
+  END IF;
 END comprobar_maquinas;
 /
 
 
-CREATE OR  REPLACE PROCEDURE reservar_maquinas(idmaq INTEGER, idconsulta INTEGER) IS
+create or replace PROCEDURE reservar_maquinas(idmaq INTEGER, idconsulta INTEGER) IS
+    already EXCEPTION;
+    PRAGMA EXCEPTION_INIT (already, -1);
 BEGIN
-  SHOW ERRORS TRIGGER trigger_name;
   INSERT INTO Reserva(IDmaquina, IDconsulta) VALUES (idmaq, idconsulta);
   COMMIT;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('ERROR, argumentos no válidos');
+			RAISE_APPLICATION_ERROR (-20302, 'ERROR, argumentos no validos');
+    WHEN already THEN
+            DBMS_OUTPUT.PUT_LINE('ERROR, La maquina ya habia sido reservada para esta consulta');
+			RAISE;
 END reservar_maquinas;
 /
 
 
-CREATE OR REPLACE PROCEDURE asignar_med(idmed INTEGER, idtrat INTEGER, cantidad INTEGER) IS
+create or replace PROCEDURE asignar_med(idmed INTEGER, idtrat INTEGER, cantidad INTEGER) IS
+    actual INTEGER;
+    cant EXCEPTION;
+    PRAGMA EXCEPTION_INIT(cant, -02290);
 BEGIN
+  SELECT CantidadMed INTO actual FROM Medicamento WHERE IDmedicamento = idmed;
+  actual:= actual - cantidad;
+  UPDATE Medicamento SET CantidadMed =actual WHERE IDmedicamento = idmed;
   INSERT INTO Receta(IDmedicamento, IDtratamiento, CantidadRec) VALUES (idmed, idtrat, cantidad);
   COMMIT;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('ERROR, medicamento o tratamiento no valido');
+			RAISE_APPLICATION_ERROR (-20301, 'ERROR, medicamento o tratamiento no valido');
+    WHEN cant THEN
+            DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no disponible');
+			RAISE;
 END asignar_med;
 /
 
-CREATE OR REPLACE PROCEDURE aniadirStock(idmed INTEGER, cantidad INTEGER) IS
+create or replace PROCEDURE aniadirStock(idmed INTEGER, cantidad INTEGER) IS
   actual INTEGER;
+  cant EXCEPTION;
+  PRAGMA EXCEPTION_INIT(cant, -2290);
 BEGIN
   SELECT CantidadMed INTO actual FROM Medicamento WHERE IDmedicamento = idmed;
   actual:= actual + cantidad;
   UPDATE Medicamento SET CantidadMed = actual WHERE IDmedicamento = idmed;
   COMMIT;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE('ERROR, el medicamento no está en la base de datos');
+			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el medicamento no está en la base de datos');
+    WHEN cant THEN
+			DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no valida');
+			RAISE;
 END aniadirStock;
 /
