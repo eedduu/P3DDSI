@@ -1,4 +1,4 @@
-userid = 'x7147725'
-password = 'x7147725'
+userid = 'x7200029'
+password = 'x77200029'
 host = 'oracle0.ugr.es'
 service = 'practbd.oracle0.ugr.es'

@@ -1,14 +1,13 @@
-create or replace PROCEDURE consultarStock(idMed int) IS
-  cantidad int;
-
+create or replace FUNCTION FUNCTION1
+(
+  IDMED INTEGER
+) RETURN INTEGER AS
+    cantidad INTEGER;
 BEGIN
-  SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idMed;
-  DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idMed || ' es : ' || cantidad);
-  EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-            DBMS_OUTPUT.PUT_LINE('ERROR, argumentos no válidos');
-			RAISE_APPLICATION_ERROR (-20303, 'ERROR, argumentos no validos');
-END consultarStock;
+    SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idMed;
+    DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idMed || ' es : ' || cantidad);
+    RETURN (cantidad);
+END FUNCTION1;
 /
 
 create or replace TRIGGER comprobar_maquinas
@@ -32,7 +31,7 @@ BEGIN
   END LOOP;
   IF (abortar) THEN
     DBMS_OUTPUT.PUT_LINE('ERROR, maquina ya reservada para otra consulta');
-    RAISE_APPLICATION_ERROR (-20305, 'Error al reservar maquina');
+    RAISE_APPLICATION_ERROR (-20305, 'ERROR, Maquina ya reservada para otra consulta');
   END IF;
 END comprobar_maquinas;
 /
@@ -47,10 +46,10 @@ BEGIN
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, argumentos no válidos');
-			RAISE_APPLICATION_ERROR (-20302, 'ERROR, argumentos no validos');
+			      RAISE_APPLICATION_ERROR (-20302, 'ERROR, argumentos no validos');
     WHEN already THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, La maquina ya habia sido reservada para esta consulta');
-			RAISE;
+			      RAISE_APPLICATION_ERROR (-20312, 'ERROR, La maquina ya habia sido reservada para esta consulta');
 END reservar_maquinas;
 /
 
@@ -68,9 +67,10 @@ BEGIN
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, medicamento o tratamiento no valido');
-			RAISE_APPLICATION_ERROR (-20301, 'ERROR, medicamento o tratamiento no valido');
+			      RAISE_APPLICATION_ERROR (-20301, 'ERROR, medicamento o tratamiento no valido');
     WHEN cant THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no disponible');
+            RAISE_APPLICATION_ERROR (-20310, 'ERROR, cantidad no disponible');
 			RAISE;
 END asignar_med;
 /
@@ -90,6 +90,6 @@ BEGIN
 			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el medicamento no está en la base de datos');
     WHEN cant THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no valida');
-			RAISE;
+		  RAISE_APPLICATION_ERROR (-20311, 'ERROR, cantidad no valida');
 END aniadirStock;
 /
