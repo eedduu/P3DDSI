@@ -129,17 +129,14 @@ CREATE OR REPLACE PROCEDURE asignarMedicoCabHistorial (dniEmp varchar2, dniHis v
 diactual date;
 
 fila CONSULTAPIDEREALIZA%ROWTYPE;
-abortar boolean := false;
 antiguomedico varchar2(9);
 
 cursor consultas IS SELECT * FROM CONSULTAPIDEREALIZA 
 WHERE (DNIPACIENTE = dniHis AND fecha >= diactual);
 
-consultas_pendientes EXCEPTION;
 mismo_medico EXCEPTION;
 no_existe_medico EXCEPTION;
 
-PRAGMA EXCEPTION_INIT (consultas_pendientes, -20141);
 PRAGMA EXCEPTION_INIT (mismo_medico, -20142);
 PRAGMA EXCEPTION_INIT (no_existe_medico, -2291);
 
@@ -153,21 +150,17 @@ BEGIN
 	END IF;
 
 	OPEN consultas;
-	abortar := false;
 	FETCH consultas INTO fila;
 	WHILE consultas%found LOOP
 		IF (fila.DNIEMPLEADO = antiguomedico) THEN
 			dbms_output.put_line(fila.DNIEMPLEADO);
 			dbms_output.put_line(antiguomedico);
-			abortar := true; 
+			cancelarConsulta(fila.IDCONSULTA); 
 		END IF;
 		FETCH consultas INTO fila; 
 	END LOOP;
 	CLOSE consultas;
 
-   IF (abortar = true) then
-        RAISE_APPLICATION_ERROR (-20141, 'Quedan consultas pendientes');
-   END IF;
 
 	UPDATE historialasigna 
 	SET dniempleado = dniEmp
@@ -176,9 +169,6 @@ BEGIN
 	COMMIT;
 
 	EXCEPTION
- 	 WHEN consultas_pendientes THEN
- 	   DBMS_OUTPUT.PUT_LINE('ERROR, consultas pendientes');
-		RAISE_APPLICATION_ERROR (-20141, 'ERROR, consultas pendientes');
  	 WHEN mismo_medico THEN
    	DBMS_OUTPUT.PUT_LINE('ERROR, es el mismo médico que antes');
 		RAISE_APPLICATION_ERROR (-20142, 'ERROR, es el mismo médico que antes');
@@ -199,4 +189,69 @@ CREATE OR REPLACE TRIGGER PRUEBA
 BEGIN
 	DBMS_OUTPUT.PUT_LINE('HOLA');
 END;
+/
+
+CREATE OR REPLACE TRIGGER ANTES_BORRADO_EMPLEADO
+	BEFORE 
+	DELETE ON MEDCABECERA
+	FOR EACH ROW
+DECLARE 
+
+	diactual date;	
+	n_otros INTEGER;
+	fila_consulta CONSULTAPIDEREALIZA%ROWTYPE;
+
+	cursor consultas IS SELECT * FROM CONSULTAPIDEREALIZA 
+	WHERE (DNIEMPLEADO = :old.DNIEMPLEADO AND fecha >= diactual);
+
+
+	fila_paciente HISTORIALASIGNA%ROWTYPE;
+
+	cursor pacientes IS SELECT * FROM HISTORIALASIGNA 
+	WHERE (DNIEMPLEADO = :old.DNIEMPLEADO);
+
+	nuevo_medico varchar(9);
+
+BEGIN
+
+	SELECT CURRENT_DATE into diactual FROM DUAL;
+
+	-- Otros médicos, si no hay cancelar el borrado.
+	-- En el caso de que sólo haya uno sin pacientes asignados
+	-- no haría falta cancelar el borrado, pero es un caso extremo.
+	-- No merece la pena.
+
+	SELECT count(*) INTO n_otros FROM  MEDCABECERA
+		WHERE (DNIEMPLEADO <> :old.DNIEMPLEADO);
+
+	IF (n_otros = 0) THEN
+		RAISE_APPLICATION_ERROR (-20600, 'No hay otros médicos de cabecera');	
+	END IF;	
+
+   -- Cancelo las consultas pendientes.
+	OPEN consultas;
+	FETCH consultas INTO fila_consulta;
+	WHILE consultas%found LOOP
+		cancelarConsulta(fila_consulta.IDCONSULTA);
+		FETCH consultas INTO fila_consulta; 
+	END LOOP;
+	CLOSE consultas;
+
+
+	-- Selecciono nuevo.
+	SELECT * INTO nuevo_medico FROM MEDCABECERA
+	 WHERE ( DNIEMPLEADO <> :old.DNIEMPLEADO AND rownum = 1);
+
+	-- recorro los pacientes que tenia asignado y los re-asigno
+	OPEN pacientes;
+	FETCH pacientes INTO fila_paciente;
+	WHILE pacientes%found LOOP
+		asignarMedicoCabHistorial(nuevo_medico, fila_paciente.DNIPACIENTE);
+		FETCH pacientes INTO fila_paciente; 
+	END LOOP;
+	CLOSE pacientes;
+
+END;
+
+
 /
