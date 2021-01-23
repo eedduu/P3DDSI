@@ -208,6 +208,7 @@ def insertar_tuplas_iniciales(conexion):
 		
 		cursor.execute('''insert into ConsultaPideRealiza values ( 01, 'false', TO_DATE('17/12/2022', 'DD/MM/YYYY'), '19191919Z', '23862375L')''')
 		cursor.execute('''insert into ConsultaPideRealiza values ( 02, 'false', TO_DATE('01/01/2019', 'DD/MM/YYYY'), '89157300N', '99999999L')''')
+		cursor.execute('''insert into ConsultaPideRealiza values ( 03, 'false', TO_DATE('01/01/2019', 'DD/MM/YYYY'), '19191919Z', '23862375L')''')
 		
 		cursor.execute('''insert into TratamientoTrata values (01,TO_DATE('01/01/2020', 'DD/MM/YYYY'),TO_DATE('01/05/2020', 'DD/MM/YYYY'), 'Cada 3 días que se rasque', '19191919Z')''')
 		cursor.execute('''insert into TratamientoTrata values(02,TO_DATE('29/12/2020', 'DD/MM/YYYY'),TO_DATE('24/2/2021', 'DD/MM/YYYY'), 'Ibuprofeno cada 8 hora','89157300N')''')
