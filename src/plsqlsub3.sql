@@ -8,6 +8,8 @@ BEGIN
     WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, argumentos no válidos');
 			RAISE_APPLICATION_ERROR (-20303, 'ERROR, argumentos no validos');
+	 WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END consultarStock;
 /
 
@@ -51,6 +53,8 @@ BEGIN
     WHEN already THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, La maquina ya habia sido reservada para esta consulta');
 			RAISE;
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END reservar_maquinas;
 /
 
@@ -72,6 +76,8 @@ BEGIN
     WHEN cant THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no disponible');
 			RAISE;
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END asignar_med;
 /
 
@@ -91,5 +97,7 @@ BEGIN
     WHEN cant THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no valida');
 			RAISE;
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END aniadirStock;
 /
