@@ -128,10 +128,9 @@ BEGIN
 		WHEN mucho_texto THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
 			RAISE_APPLICATION_ERROR (-12899, 'ERROR, mucho texto en la descripcion del tratamiento');
-	WHEN mucho_tratamiento THEN
+		WHEN mucho_tratamiento THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
 			RAISE_APPLICATION_ERROR (-20620, 'ERROR, sólo puede haber un tratamiento activo');
-		WHEN others then
 		WHEN others then
 			DBMS_OUTPUT.PUT_LINE('ERROR desconocido ');
 			RAISE_APPLICATION_ERROR (-20105, 'ERROR desconocido');
