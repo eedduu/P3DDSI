@@ -35,6 +35,11 @@ BEGIN
 		WHEN pya_invalido THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto introducido en patologias y algergias');
 			RAISE_APPLICATION_ERROR (-12899, 'ERROR, mucho texto introducido en patologias y algergias');	
+		WHEN others then
+         	DBMS_OUTPUT.PUT_LINE('ERROR desconocido ');
+			RAISE_APPLICATION_ERROR (-20105, 'ERROR desconocido');
+
+
 END addHistorial; 
 /
 
@@ -62,6 +67,10 @@ BEGIN
 		WHEN mucho_texto THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en patologias y algergias');
 			RAISE_APPLICATION_ERROR (-12899, 'ERROR, mucho texto en patologias y algergias');
+		WHEN others then
+         	DBMS_OUTPUT.PUT_LINE('ERROR desconocido ');
+			RAISE_APPLICATION_ERROR (-20105, 'ERROR desconocido');
+
 END modHistorial; 
 /
 
@@ -80,6 +89,10 @@ EXCEPTION
 		WHEN no_existe THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
 			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el historial con ese DNI no existe');
+		WHEN others then
+	        DBMS_OUTPUT.PUT_LINE('ERROR desconocido ');
+			RAISE_APPLICATION_ERROR (-20105, 'ERROR desconocido');
+
 END; 
 /
 
@@ -108,5 +121,8 @@ BEGIN
 		WHEN mucho_texto THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
 			RAISE_APPLICATION_ERROR (-12899, 'ERROR, muco texto en la descripcion del tratamiento');
+		WHEN others then
+         	DBMS_OUTPUT.PUT_LINE('ERROR desconocido ');
+			RAISE_APPLICATION_ERROR (-20105, 'ERROR desconocido');
 END addTratamiento; 
 /
