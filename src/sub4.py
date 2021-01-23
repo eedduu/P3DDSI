@@ -38,6 +38,7 @@ def menuConsulta(conn):
 			if fecha_correcta :
 				try:
 					cursor.callproc("pedirConsultaCab", (fecha, dni) )
+					cursor.commit()
 				except cx_Oracle.IntegrityError as error:
 					print( (error.args[0].message).split('\n')[0] )
 				except cx_Oracle.DatabaseError as error:
@@ -52,6 +53,7 @@ def menuConsulta(conn):
 		
 			try:
 				cursor.callproc('cancelarConsulta', (idcon))
+				cursor.commit()
 			except cx_Oracle.IntegrityError as error:
 				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
@@ -66,6 +68,7 @@ def menuConsulta(conn):
 
 			try:
 				cursor.callproc('confirmacion', (idcon))
+				cursor.commit()
 			except cx_Oracle.IntegrityError as error:
 				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
@@ -93,6 +96,7 @@ def menuConsulta(conn):
 			if fecha_correcta :
 				try:
 					cursor.callproc("derivarEsp", (fecha, dniPa, dniEs) )
+					cursor.commit()
 				except cx_Oracle.IntegrityError as error:
 					print( (error.args[0].message).split('\n')[0] )
 				except cx_Oracle.DatabaseError as error:

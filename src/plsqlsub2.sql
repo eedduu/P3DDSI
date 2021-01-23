@@ -5,7 +5,8 @@ DECLARE
     n INTEGER;
 BEGIN
     SELECT count(*) INTO n FROM TratamientoTrata WHERE (dnipaciente = :new.dnipaciente AND fechaf > :new.fechai); 
-	IF (n > 1) THEN
+    DBMS_OUTPUT.PUT_LINE(n);
+	IF (n > 0) THEN
        		raise_application_error(-20620, 'ERROR, el paciente sólo puede tener un tratamiento activo' );
     END IF;
 END;
