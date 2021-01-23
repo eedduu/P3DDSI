@@ -1,23 +1,21 @@
-CREATE OR REPLACE PROCEDURE consultarStock(idMed INTEGER) IS
+CREATE OR REPLACE PROCEDURE consultarStock(idMed int) IS
 
-  cantidad INTEGER;
-  
+  cantidad int;
+
 BEGIN
   SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idMed;
-  dbms_output.put_line('La cantidad disponible del medicamento con identificador ' || idMed || ' es : ' || cantidad);
+  DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idMed || ' es : ' || cantidad);
 
 END consultarStock;
-
-
 /
 
 CREATE OR REPLACE TRIGGER comprobar_maquinas
-BEFORE INSERT ON Reserva FOR EACH ROW
+BEFORE INSERT ON Reserva
 DECLARE
   mifecha DATE;
   miconsulta INTEGER;
   mimaquina INTEGER;
-  cursor consultas IS SELECT IDconsulta FROM Reserva WHERE IDmaquina = new.IDmaquina;
+  cursor consultas IS SELECT * FROM Reserva WHERE IDmaquina = new.IDmaquina;
   fila CONSULTAPIDEREALIZA%ROWTYPE;
 BEGIN
   miconsulta:= new.IDconsulta;
@@ -32,9 +30,7 @@ BEGIN
     FETCH consultas INTO fila;
   END LOOP;
   CLOSE consultas;
-
 END comprobar_maquinas;
-
 /
 
 
@@ -43,31 +39,22 @@ BEGIN
   INSERT INTO Reserva(IDmaquina, IDconsulta) VALUES (idmaq, idconsulta);
   COMMIT;
 END reservar_maquinas;
-
-
 /
 
 
 CREATE OR REPLACE PROCEDURE asignar_med(idmed INTEGER, idtrat INTEGER, cantidad INTEGER) IS
-  actual INTEGER;
-
 BEGIN
-  SELECT CantidadRec INTO actual FROM Receta WHERE IDmedicamento = idmed   AND IDtratamiento = idtrat;
-  actual:= actual + cantidad;
-  UPDATE Receta SET CantidadRec = actual WHERE IDmedicamento = idmed   AND IDtratamiento = idtrat;
+  INSERT INTO Receta(IDmedicamento, IDtratamiento, cantidad) VALUES (idmed, idtrat, cantidad);
   COMMIT;
-
 END asignar_med;
-
-
 /
 
-CREATE OR REPLACE PROCEDURE añadirStock(idmed INTEGER, cantidad INTEGER) IS
+CREATE OR REPLACE PROCEDURE aniadirStock(idmed INTEGER, cantidad INTEGER) IS
   actual INTEGER;
 BEGIN
   SELECT CantidadMed INTO actual FROM Medicamento WHERE IDmedicamento = idmed;
   actual:= actual + cantidad;
   UPDATE Medicamento SET CantidadMed = actual WHERE IDmedicamento = idmed;
   COMMIT;
-END añadirStock;
+END aniadirStock;
 /

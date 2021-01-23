@@ -80,16 +80,16 @@ def menuInventario(conexion):
            reservar_maquinas(conexion, idmaquina, idconsulta)
 
        elif opc==3:
-           idmed= input('ID del medicamento')
+           id= input('ID del medicamento')
            idtrat= input('ID del tratamiento')
-           cantidad=input('Cantidad del medicamento')
-           asignarMedicamentos(conexion, idmed, idtrat, cantidad)
+           cant=input('Cantidad del medicamento')
+           asignarMedicamentos(conexion, id, idtrat, cant)
 
        elif opc==4:
            idmed = input('ID del medicamento')
            cantidad = input('Cantidad del medicamento')
            añadirStock(conexion, idmed, cantidad)
-       elif poc==5:
+       elif opc==5:
            break
 
        else:

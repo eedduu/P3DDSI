@@ -2,7 +2,7 @@ CREATE OR REPLACE TRIGGER nuevoTratamiento
 AFTER INSERT ON TratamientoTrata
 FOR EACH ROW
 BEGIN
-	DELETE FROM TratamientoTrata WHERE DNIpaciente = :new.DNIpaciente AND IDtratamiento = :new.IDtratamiento;
+	DELETE FROM TratamientoTrata WHERE DNIpaciente = :new.DNIpaciente AND FechaF > :new.FechaI AND IDtratamiento = :new.IDtratamiento;
 END;
 /
 
@@ -65,23 +65,19 @@ BEGIN
 END modHistorial; 
 /
 
-CREATE OR REPLACE PROCEDURE getHistorial (dni HistorialAsigna.DNIpaciente%type)
-IS 
-r_pya HistorialAsigna.PyA%type;
-r_gs HistorialAsigna.GS%type;
-r_telefono HistorialAsigna.Telefono%type;
-r_dniempleado HistorialAsigna.DNIempleado%type;
 
-CURSOR historial IS SELECT Telefono, PyA, GS, DNIempleado FROM HistorialAsigna WHERE DNIpaciente = dni; 
+CREATE OR REPLACE PROCEDURE getHistorial (dni HistorialAsigna.DNIpaciente%type) IS
+
+fila HISTORIALASIGNA%ROWTYPE;
 no_existe EXCEPTION;
+
 PRAGMA EXCEPTION_INIT (no_existe, -20300);
 
 BEGIN 
-	OPEN historial;
-	FETCH historial into r_telefono, r_pya, r_gs, r_dniempleado; 
-    dbms_output.put_line('Telefono: ' || telefono || ' Grupo Sanguineo: '|| gs || 'DNI medico cabecera: ' || dniempleado );
-    CLOSE historial;
-    EXCEPTION
+	SELECT * FROM HistorialAsigna INTO fila WHERE DNIpaciente = dni;
+	DBMS_OUTPUT.PUT_LINE('DNI: ' || fila.DNIpaciente || ' Telefono: ' || fila.telefono ||'GS: ' || fila.gs || ' Patologias y alergias: ' || fila.PyA || ' DNI medico cabecera' || fila.DNIempleado );
+
+EXCEPTION
 		WHEN no_existe THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
 			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el historial con ese DNI no existe');
