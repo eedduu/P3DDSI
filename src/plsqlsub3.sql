@@ -1,10 +1,10 @@
-CREATE OR REPLACE PROCEDURE consultarStock(idMed int) IS
+CREATE OR REPLACE PROCEDURE consultarStock(idmed int) IS
 
   cantidad int;
 
 BEGIN
-  SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idMed;
-  DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idMed || ' es : ' || cantidad);
+  SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idmed;
+  DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idmed || ' es : ' || cantidad);
 
 END consultarStock;
 /
@@ -36,6 +36,7 @@ END comprobar_maquinas;
 
 CREATE OR  REPLACE PROCEDURE reservar_maquinas(idmaq INTEGER, idconsulta INTEGER) IS
 BEGIN
+  SHOW ERRORS TRIGGER trigger_name;
   INSERT INTO Reserva(IDmaquina, IDconsulta) VALUES (idmaq, idconsulta);
   COMMIT;
 END reservar_maquinas;
@@ -44,7 +45,7 @@ END reservar_maquinas;
 
 CREATE OR REPLACE PROCEDURE asignar_med(idmed INTEGER, idtrat INTEGER, cantidad INTEGER) IS
 BEGIN
-  INSERT INTO Receta(IDmedicamento, IDtratamiento, cantidad) VALUES (idmed, idtrat, cantidad);
+  INSERT INTO Receta(IDmedicamento, IDtratamiento, CantidadRec) VALUES (idmed, idtrat, cantidad);
   COMMIT;
 END asignar_med;
 /
