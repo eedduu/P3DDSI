@@ -19,7 +19,7 @@ def reservar_maquinas(conexion, idmaq, idconsulta):
 
     try:
         cursor.callproc('reservar_maquinas',(idmaq, idconsulta))
-        cursor.commit()
+        conexion.commit()
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:
@@ -34,7 +34,7 @@ def asignarMedicamentos(conexion, idmed, idtrat, cantidad):
 
     try:
         cursor.callproc('asignar_med',(idmed, idtrat, cantidad))
-        cursor.commit()
+        conexion.commit()
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:
@@ -48,7 +48,7 @@ def añadirStock(conexion, idmed, cantidad):
 
     try:
         cursor.callproc('añadirStock',(idmed, cantidad))
-        cursor.commit()
+        conexion.commit()
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:

@@ -107,7 +107,7 @@ def menuHistorial(conexion):
 			gs          = input('Grupo sanguíneo: ')
 			dniempleado = input('DNI del médico de cabecera: ')
 			addHistorial(conexion,dni,telefono,pya,gs,dniempleado)
-                        conexion.commit()
+			conexion.commit()
 	    # Modificación de un historial
 		elif opc==2:
 			dni         = input('DNI del paciente cuyo historial se quiere modificar: ')
@@ -145,7 +145,7 @@ def menuHistorial(conexion):
 	    # Añadir un tratamiento
 		elif opc==4:
 			addTratamiento(conexion)
-                        conexion.commit()
+			conexion.commit()
 	    # Sale del menú
 		elif opc==5:
 			break
