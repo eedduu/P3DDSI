@@ -1,8 +1,13 @@
-CREATE OR REPLACE TRIGGER nuevoTratamiento
+create or replace TRIGGER nuevoTratamiento
 AFTER INSERT ON TratamientoTrata
 FOR EACH ROW
+DECLARE
+    n INTEGER;
 BEGIN
-	DELETE FROM TratamientoTrata WHERE DNIpaciente = :new.DNIpaciente AND FechaF > :new.FechaI AND IDtratamiento = :new.IDtratamiento;
+    SELECT count(*) INTO n FROM TratamientoTrata WHERE (dnipaciente = :new.dnipaciente AND fechaf > :new.fechai); 
+	IF (n > 1) THEN
+       		raise_application_error(-20620, 'ERROR, el paciente sólo puede tener un tratamiento activo' );
+    END IF;
 END;
 /
 
@@ -105,7 +110,9 @@ IS
 
 no_existe EXCEPTION;
 mucho_texto EXCEPTION;
+mucho_tratamiento EXCEPTION;
 
+PRAGMA EXCEPTION_INIT (mucho_tratamiento, -20620);
 PRAGMA EXCEPTION_INIT (no_existe, -20300);
 PRAGMA EXCEPTION_INIT (mucho_texto, -12899);
 
@@ -120,7 +127,11 @@ BEGIN
 			RAISE_APPLICATION_ERROR (-20300, 'ERROR, el tratamiento o el paciente no existen');
 		WHEN mucho_texto THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
-			RAISE_APPLICATION_ERROR (-12899, 'ERROR, muco texto en la descripcion del tratamiento');
+			RAISE_APPLICATION_ERROR (-12899, 'ERROR, mucho texto en la descripcion del tratamiento');
+	WHEN mucho_tratamiento THEN
+			DBMS_OUTPUT.PUT_LINE('ERROR, mucho texto en la descripcion del tratamiento');
+			RAISE_APPLICATION_ERROR (-20620, 'ERROR, sólo puede haber un tratamiento activo');
+		WHEN others then
 		WHEN others then
 			DBMS_OUTPUT.PUT_LINE('ERROR desconocido ');
 			RAISE_APPLICATION_ERROR (-20105, 'ERROR desconocido');
