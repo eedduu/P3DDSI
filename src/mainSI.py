@@ -142,7 +142,7 @@ while True:
 			print('ERROR desconocido')
 			print(error)		
     # Crear un nuevo historial de salud
-	if opc==5:
+	elif opc==5:
 		dni         = input('DNI del paciente: ')
 		telefono    = int(input('Teléfono: '))
 		pya         = input('Patologías y alergias: ')
@@ -185,12 +185,13 @@ while True:
 	elif opc==8:
 		
 		cursor.execute("SAVEPOINT Cancelartratamiento")
-		addTratamiento(conexion)
+		idtratamiento   = input('ID del tratamiento: ')
+		addTratamiento(conexion, idtratamiento)
 		cursor.execute("SAVEPOINT Cancelarrecetas")
 		while True:
 			print('###################################################')
 			print('# Escoge una opción:                              #')
-			print('# 1.Nuevo receta				                        #')
+			print('# 1.Nuevo receta				   #')
 			print('# 2.Cancelar recetas                              #')
 			print('# 3.Cancelar tratamiento                          #')
 			print('# 4.Confirmar tratamiento                         #')
@@ -198,10 +199,9 @@ while True:
 			opc2 = int(input('\n Entrada: '))		
 		
 			if opc2 == 1:
-				id= input('ID del medicamento')
-				idtrat= input('ID del tratamiento')
-				cant=input('Cantidad del medicamento')
-				asignarMedicamentos(conexion, id, idtrat, cant)
+				id= input('ID del medicamento: ')
+				cant=input('Cantidad del medicamento: ')
+				asignarMedicamentos(conexion, id, idtratamiento, cant)
 			elif opc2 == 2:
 				cursor.execute('ROLLBACK TO Cancelarrecetas')
 			elif opc2 == 3:
@@ -223,15 +223,15 @@ while True:
 		while True:
 			print('###################################################')
 			print('# Escoge una opción:                              #')
-			print('# 1.Nuevo medicamento		                        #')
+			print('# 1.Nuevo medicamento				   #')
 			print('# 2.Cancelar nuevo stock medicamentos             #')
 			print('# 3.Confirmar cambios                             #')
 			print('###################################################')
 			opc2 = int(input('\n Entrada: '))		
 			if opc2 == 1:
-				idmed = input('ID del medicamento')
-				cantidad = input('Cantidad del medicamento')
-				añadirStock(conexion, idmed, cantidad)
+				idmed = input('ID del medicamento: ')
+				cantidad = input('Cantidad del medicamento: ')
+				aniadirStock(conexion, idmed, cantidad)
 			elif opc2 == 2:
 				cursor.execute('ROLLBACK TO Cancelarstocknuevo')
 				break
@@ -257,7 +257,7 @@ while True:
 		if fecha_correcta :
 			try:
 				cursor.callproc("pedirConsultaCab", (fecha, dni) )
-				conn.commit()
+				conexion.commit()
 			except cx_Oracle.IntegrityError as error:
 				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
@@ -271,7 +271,7 @@ while True:
 	
 		try:
 			cursor.callproc('cancelarConsulta', (idcon))
-			conn.commit()
+			conexion.commit()
 		except cx_Oracle.IntegrityError as error:
 			print( (error.args[0].message).split('\n')[0] )
 		except cx_Oracle.DatabaseError as error:
@@ -284,7 +284,7 @@ while True:
 
 		try:
 			cursor.callproc('confirmacion', (idcon))
-			conn.commit()
+			conexion.commit()
 		except cx_Oracle.IntegrityError as error:
 			print( (error.args[0].message).split('\n')[0] )
 		except cx_Oracle.DatabaseError as error:
@@ -322,18 +322,18 @@ while True:
 	elif opc == 15:
 	
 		cursor.execute("SAVEPOINT CancelarMaquinaria")
-		idconsulta = input('ID de la consulta')
+		idconsulta = input('ID de la consulta: ')
 		while True:
 			print('###################################################')
 			print('# Escoge una opción:                              #')
-			print('# 1.Reservar Maquina			                     #')
+			print('# 1.Reservar Maquina			      	   #')
 			print('# 2.Cancelar Reservas                             #')
 			print('# 3.Confirmar reservas                            #')
 			print('###################################################')
 			opc2 = int(input('\n Entrada: '))		
 		
 			if opc2 == 1:
-				idmaquina = input('ID de la maquina')
+				idmaquina = input('ID de la maquina: ')
 				reservar_maquinas(conexion, idmaquina, idconsulta)
 			elif opc2 == 2:
 				cursor.execute('ROLLBACK TO CancelarMaquinaria')

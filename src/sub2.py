@@ -43,9 +43,8 @@ def getHistorial(conexion,dni):
         print('ERROR desconocido')
         print(error)
 
-def addTratamiento(conexion):
+def addTratamiento(conexion, idtratamiento):
     cursor = conexion.cursor()
-    idtratamiento   = input('ID del tratamiento: ')
     
     print('Fecha de inicio del tratamiento: \n')
     dia = int(input('   Día: '))

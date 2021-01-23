@@ -41,11 +41,11 @@ def asignarMedicamentos(conexion, idmed, idtrat, cantidad):
         print('ERROR desconocido')
         print(error)
 
-def añadirStock(conexion, idmed, cantidad):
+def aniadirStock(conexion, idmed, cantidad):
     cursor = conexion.cursor()
 
     try:
-        cursor.callproc('añadirStock',(idmed, cantidad))
+        cursor.callproc('aniadirStock',(idmed, cantidad))
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
     except cx_Oracle.DatabaseError as error:
