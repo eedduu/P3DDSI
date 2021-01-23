@@ -40,7 +40,7 @@ END confirmacion;
 
 CREATE OR REPLACE PROCEDURE derivarEsp ( fecha varchar2, dniPa varchar2, dniEs varchar2 ) IS
 	nuevoID INTEGER; 
-	dniFalse VARCHAR(9)
+	dniFalse VARCHAR(9);
 BEGIN 
 	SELECT DNIempleado INTO dniFalse FROM MedEspecialista WHERE DNIempleado = dniEs ;
 	SELECT DNIpaciente INTO dniFalse FROM HistorialAsigna WHERE DNIpaciente = dniPa ;

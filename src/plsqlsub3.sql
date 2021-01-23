@@ -11,8 +11,9 @@ END consultarStock;
 
 /
 
-CREATE OR REPLACE TRIGGER comprobar_maquinas IS
+CREATE OR REPLACE TRIGGER comprobar_maquinas
 BEFORE INSERT ON Reserva FOR EACH ROW
+DECLARE
   mifecha DATE;
   miconsulta INTEGER;
   mimaquina INTEGER;
@@ -61,12 +62,12 @@ END asignar_med;
 
 /
 
-CREATE OR REPLACE PROCEDURE añadirStock(idmed INTEGER, cantidad INTEGER)
+CREATE OR REPLACE PROCEDURE añadirStock(idmed INTEGER, cantidad INTEGER) IS
   actual INTEGER;
 BEGIN
-  SELECT CantidadMed FROM Medicamento WHERE IDmedicamento = idmed;
+  SELECT CantidadMed INTO actual FROM Medicamento WHERE IDmedicamento = idmed;
   actual:= actual + cantidad;
   UPDATE Medicamento SET CantidadMed = actual WHERE IDmedicamento = idmed;
   COMMIT;
-END
+END añadirStock;
 /
