@@ -10,6 +10,8 @@ BEGIN
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20001, 'Sin Datos');
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END pedirConsultaCab;
 /
 
@@ -23,11 +25,16 @@ BEGIN
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20002, 'Sin Datos');
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END cancelarConsulta; 
 /
    
 CREATE OR REPLACE PROCEDURE confirmacion ( idcon INTEGER ) IS 
 	idFalse INTEGER;
+	validez EXCEPTION;
+
+	PRAGMA EXCEPTION_INIT (validez, -20005);
 BEGIN 
 	SELECT IDconsulta INTO idFalse FROM ConsultaPideRealiza WHERE IDconsulta = idcon ;
 	UPDATE ConsultaPideRealiza SET Valida = 'true' WHERE IDconsulta = idcon;
@@ -35,6 +42,10 @@ BEGIN
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20003, 'Sin Datos');
+	WHEN validez THEN
+		RAISE_APPLICATION_ERROR (-20005, 'Ya hay una valida');
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END confirmacion; 
 /
 
@@ -51,19 +62,40 @@ BEGIN
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20004, 'Sin Datos');
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END derivarEsp;
 /
 
-CREATE OR REPLACE TRIGGER MUCHAS_CONSULTAS
-BEFORE UPDATE OF Valida 
-ON ConsultaPideRealiza FOR EACH ROW
-DECLARE
-	cod INTEGER;
+create or replace TRIGGER MUCHAS_CONSULTAS
+	FOR 
+	UPDATE OF Valida ON ConsultaPideRealiza
+	COMPOUND TRIGGER
+    
+    cod INTEGER;
+    fech date;
+    dnipa varchar(9);
+    dniemp varchar(9);
+	
+BEFORE EACH ROW IS
 BEGIN
-	SELECT count(*) INTO cod FROM ConsultaPideRealiza WHERE Fecha = :new.Fecha AND DNIpaciente = :new.DNIpaciente AND DNIempleado = :new.DNIempleado AND Valida = 'true';
-	IF ( cod != 0 ) THEN
-		RAISE_APPLICATION_ERROR (-20005, 'Hay');
+
+	fech := :new.Fecha;
+    dnipa := :new.DNIpaciente;
+    dniemp := :new.DNIempleado;    
+	
+END BEFORE EACH ROW;
+
+AFTER STATEMENT IS
+BEGIN
+
+	SELECT count(*) INTO cod FROM ConsultaPideRealiza WHERE Fecha = fech AND DNIpaciente = dnipa AND DNIempleado = dniemp AND Valida = 'true';
+
+	IF ( cod != 1 ) THEN
+		RAISE_APPLICATION_ERROR (-20005, 'No se puede validar');
 	END IF;
+
+END AFTER STATEMENT;
 END;
 /
 
