@@ -13,7 +13,7 @@ BEGIN
 		RAISE_APPLICATION_ERROR (-20010, 'Fecha anterior al dia actual');
 	END IF;
 	INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, 'false', TO_DATE( fecha,'YYYY-MM-DD'), dniPa, dniCab ); 
-	COMMIT;
+	
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20001, 'DNI incorrecto');
@@ -30,7 +30,7 @@ BEGIN
 	SELECT IDconsulta INTO idFalse FROM ConsultaPideRealiza WHERE IDconsulta = idcon ;
 	DELETE FROM Reserva WHERE IDconsulta = idcon; 
 	DELETE FROM ConsultaPideRealiza WHERE IDconsulta = idcon; 
-	COMMIT;
+	
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20002, 'Sin Datos');
@@ -47,7 +47,7 @@ CREATE OR REPLACE PROCEDURE confirmacion ( idcon INTEGER ) IS
 BEGIN 
 	SELECT IDconsulta INTO idFalse FROM ConsultaPideRealiza WHERE IDconsulta = idcon ;
 	UPDATE ConsultaPideRealiza SET Valida = 'true' WHERE IDconsulta = idcon;
-	COMMIT;
+	
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20003, 'Sin Datos');
@@ -67,7 +67,7 @@ BEGIN
 	SELECT IDconsulta INTO nuevoID FROM ConsultaPideRealiza WHERE IDconsulta >= ALL ( SELECT IDconsulta FROM ConsultaPideRealiza );
 	nuevoID := nuevoID + 1 ;
 	INSERT INTO ConsultaPideRealiza VALUES ( nuevoID, 'false', TO_DATE( fecha,'YYYY-MM-DD'), dniPa, dniEs ); 
-	COMMIT;
+	
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR (-20004, 'Sin Datos');
@@ -89,7 +89,7 @@ create or replace TRIGGER MUCHAS_CONSULTAS
 BEFORE EACH ROW IS
 BEGIN
 
-	fech := :new.Fecha;
+    fech := :new.Fecha;
     dnipa := :new.DNIpaciente;
     dniemp := :new.DNIempleado;    
 	

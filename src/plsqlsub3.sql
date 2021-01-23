@@ -48,7 +48,7 @@ create or replace PROCEDURE reservar_maquinas(idmaq INTEGER, idconsulta INTEGER)
     PRAGMA EXCEPTION_INIT (already, -1);
 BEGIN
   INSERT INTO Reserva(IDmaquina, IDconsulta) VALUES (idmaq, idconsulta);
-  COMMIT;
+  
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, argumentos no válidos');
@@ -69,7 +69,7 @@ BEGIN
   actual:= actual - cantidad;
   UPDATE Medicamento SET CantidadMed =actual WHERE IDmedicamento = idmed;
   INSERT INTO Receta(IDmedicamento, IDtratamiento, CantidadRec) VALUES (idmed, idtrat, cantidad);
-  COMMIT;
+  
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, medicamento o tratamiento no valido');
@@ -90,7 +90,7 @@ BEGIN
   SELECT CantidadMed INTO actual FROM Medicamento WHERE IDmedicamento = idmed;
   actual:= actual + cantidad;
   UPDATE Medicamento SET CantidadMed = actual WHERE IDmedicamento = idmed;
-  COMMIT;
+  
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, el medicamento no está en la base de datos');
