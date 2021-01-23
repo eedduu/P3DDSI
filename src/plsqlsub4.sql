@@ -54,3 +54,17 @@ EXCEPTION
 END derivarEsp;
 /
 
+CREATE OR REPLACE TRIGGER MUCHAS_CONSULTAS
+BEFORE UPDATE OF Valida 
+ON ConsultaPideRealiza FOR EACH ROW
+DECLARE
+	cod INTEGER;
+BEGIN
+	SELECT count(*) INTO cod FROM ConsultaPideRealiza WHERE Fecha = :new.Fecha AND DNIpaciente = :new.DNIpaciente AND DNIempleado = :new.DNIempleado AND Valida = 'true';
+	IF ( cod != 0 ) THEN
+		RAISE_APPLICATION_ERROR (-20005, 'Hay');
+	END IF;
+END;
+/
+
+

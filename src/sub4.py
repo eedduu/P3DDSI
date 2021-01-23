@@ -87,7 +87,7 @@ def menuConsulta(conn):
 		    		if e.code == 20004:
 		    			print("\n ---Dni no válido---")
 		    		else:
-		    			print("Error desconocido")
+		    			print(e.message)
 	    	
 	    # Sale del menú
 	    elif opc==5:
