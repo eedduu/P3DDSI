@@ -65,7 +65,15 @@ while True:
 	print('# 5.Añadir un nuevo historial                     #')
 	print('# 6.Modificar un historial                        #')
 	print('# 7.Imprimir el historial                         #')
-	print('# 8.Salir del programa                            #')
+	print('# 8.Añadir tratamientos                           #')
+	print('# 9.Consultar stock de medicamento                #')
+	print('# 10.Añadir stock medicamento                     #')
+	print('# 11.Pedir consulta medico cabecera               #')
+	print('# 12.Cancelar consulta                            #')
+	print('# 13.Confirmar consulta                           #')
+	print('# 14.Derivar especialista                         #')
+	print('# 15.Reservar maquinaria                          #')
+	print('# 16.Salir                                        #')
 	print('###################################################')
 	opc = int(input('\n Entrada: '))
 
@@ -196,15 +204,153 @@ while True:
 				asignarMedicamentos(conexion, id, idtrat, cant)
 			elif opc2 == 2:
 				cursor.execute('ROLLBACK TO Cancelarrecetas')
-			elif opc3 == 3:
+			elif opc2 == 3:
 				cursor.execute('ROLLBACK TO Cancelartratamiento')
-			elif opc4 == 4:
-				break;
+				break
+			elif opc2 == 4:
+				break
 			else:
 				print('Opcion no valida, vuelva a elegir.\n')
 
 		conexion.commit()
+	elif opc==9:
+		idMed = input('ID del medicamento: ')
+		row = consultarStockMed(conexion, idMed)
+		if (row!=None):
+			print('La cantidad disponible del medicamento con identificador', idMed ,'es ', row)
+	elif opc==10:
+		cursor.execute("SAVEPOINT Cancelarstocknuevo")
+		while True:
+			print('###################################################')
+			print('# Escoge una opción:                              #')
+			print('# 1.Nuevo medicamento		                        #')
+			print('# 2.Cancelar nuevo stock medicamentos             #')
+			print('# 3.Confirmar cambios                             #')
+			print('###################################################')
+			opc2 = int(input('\n Entrada: '))		
+			if opc2 == 1:
+				idmed = input('ID del medicamento')
+				cantidad = input('Cantidad del medicamento')
+				añadirStock(conexion, idmed, cantidad)
+			elif opc2 == 2:
+				cursor.execute('ROLLBACK TO Cancelarstocknuevo')
+				break
+			elif opc2 == 3:
+				break
+			else:
+				print('Opcion no valida, vuelva a elegir.\n')
+		
+		conexion.commit()
+
+	elif opc==11:
+		dni = input('   DNI del paciente: ')
+		dia = int(input('   Día: '))
+		mes = int(input('   Mes: '))
+		anyo = int(input('   Año: '))
+		fecha_correcta = True
+		try:
+				fecha = datetime.date(anyo,mes,dia).__str__()
+		except:
+			print("Fecha inválida.")
+			fecha_correcta = False
+		
+		if fecha_correcta :
+			try:
+				cursor.callproc("pedirConsultaCab", (fecha, dni) )
+				conn.commit()
+			except cx_Oracle.IntegrityError as error:
+				print( (error.args[0].message).split('\n')[0] )
+			except cx_Oracle.DatabaseError as error:
+				print( (error.args[0].message).split('\n')[0] )
+			except Error as error:
+				print('ERROR desconocido')
+				print(error)
+					
+	elif opc == 12:
+		idcon = input('ID de la consulta: ')
 	
+		try:
+			cursor.callproc('cancelarConsulta', (idcon))
+			conn.commit()
+		except cx_Oracle.IntegrityError as error:
+			print( (error.args[0].message).split('\n')[0] )
+		except cx_Oracle.DatabaseError as error:
+			print( (error.args[0].message).split('\n')[0] )
+		except Error as error:
+			print('ERROR desconocido')
+			print(error)
+	elif opc == 13:
+		idcon = input('ID de la consulta: ')
+
+		try:
+			cursor.callproc('confirmacion', (idcon))
+			conn.commit()
+		except cx_Oracle.IntegrityError as error:
+			print( (error.args[0].message).split('\n')[0] )
+		except cx_Oracle.DatabaseError as error:
+			print( (error.args[0].message).split('\n')[0] )
+		except Error as error:
+			print('ERROR desconocido')
+			print(error)
+	
+	elif opc == 14:		
+		dniPa = input('DNI del paciente: ')
+		dniEs = input('DNI del médico especialista: ')
+		dia = int(input('   Día: '))
+		mes = int(input('   Mes: '))
+		anyo = int(input('   Año: '))
+		fecha_correcta = True
+		try:
+			fecha = datetime.date(anyo,mes,dia).__str__()
+		except:
+			print("Fecha inválida.")
+			fecha_correcta = False
+
+		if fecha_correcta :
+			try:
+				cursor.callproc("derivarEsp", (fecha, dniPa, dniEs) )
+				conexion.commit()
+			except cx_Oracle.IntegrityError as error:
+				print( (error.args[0].message).split('\n')[0] )
+			except cx_Oracle.DatabaseError as error:
+				print( (error.args[0].message).split('\n')[0] )
+			except Error as error:
+				print('ERROR desconocido')
+				print(error)
+
+	
+	elif opc == 15:
+	
+		cursor.execute("SAVEPOINT CancelarMaquinaria")
+		idconsulta = input('ID de la consulta')
+		while True:
+			print('###################################################')
+			print('# Escoge una opción:                              #')
+			print('# 1.Reservar Maquina			                     #')
+			print('# 2.Cancelar Reservas                             #')
+			print('# 3.Confirmar reservas                            #')
+			print('###################################################')
+			opc2 = int(input('\n Entrada: '))		
+		
+			if opc2 == 1:
+				idmaquina = input('ID de la maquina')
+				reservar_maquinas(conexion, idmaquina, idconsulta)
+			elif opc2 == 2:
+				cursor.execute('ROLLBACK TO CancelarMaquinaria')
+				break
+			elif opc2 == 3:
+				break
+			else:
+				print('Opcion no valida, vuelva a elegir.\n')
+
+		conexion.commit()
+	elif opc == 16:
+		conexion.commit()
+		break
+	else:
+		print("Opcion no válida")
+
+conexion.commit()
 
 
 
@@ -214,5 +360,7 @@ while True:
 
 
 
+
+	
 
 
