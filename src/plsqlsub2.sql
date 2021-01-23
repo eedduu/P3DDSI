@@ -65,16 +65,17 @@ BEGIN
 END modHistorial; 
 /
 
-CREATE OR REPLACE PROCEDURE getHistorial (dni HistorialAsigna.DNIpaciente%type)
-IS
+
+CREATE OR REPLACE PROCEDURE getHistorial (dni HistorialAsigna.DNIpaciente%type) IS
 
 fila HISTORIALASIGNA%ROWTYPE;
 no_existe EXCEPTION;
 
 PRAGMA EXCEPTION_INIT (no_existe, -20300);
+
 BEGIN 
 	SELECT * FROM HistorialAsigna INTO fila WHERE DNIpaciente = dni;
-
+	DBMS_OUTPUT.PUT_LINE('DNI: ' || fila.DNIpaciente || ' Telefono: ' || fila.telefono ||'GS: ' || fila.gs || ' Patologias y alergias: ' || fila.PyA || ' DNI medico cabecera' || fila.DNIempleado );
 
 EXCEPTION
 		WHEN no_existe THEN
