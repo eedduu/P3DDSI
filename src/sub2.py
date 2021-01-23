@@ -14,7 +14,7 @@ def addHistorial(conexion,dni,telefono,pya,gs,dniempleado):
         print('ERROR desconocido')
         print(error)
 
-def modHistorial(conexion,dni,telefono,pya,gs,dniempleado):
+def modHistorial(conexion,dni,telefono,pya,gs):
     cursor = conexion.cursor()
 
     try:
@@ -124,7 +124,7 @@ def menuHistorial(conexion):
                             if (gs == ''):
                                 gs = historialant[3]
 
-                            modHistorial(conexion,dni,telefono,pya,gs,historialant[4])
+                            modHistorial(conexion,dni,telefono,pya,gs)
 			else:
 				print('Introduzca un DNI')
 

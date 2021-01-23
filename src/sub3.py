@@ -4,7 +4,7 @@ def consultarStockMed(conexion, idMed):
     cursor = conexion.cursor()
 
     try:
-        cant = cursor.callfunc('FUNCTION1', int,[idMed])
+        cant = cursor.callfunc('FUNCTION1', int ,[idMed])
         return cant
     except cx_Oracle.IntegrityError as error:
         print( (error.args[0].message).split('\n')[0] )
@@ -74,7 +74,8 @@ def menuInventario(conexion):
        if opc==1:
            idMed = input('ID del medicamento: ')
            row = consultarStockMed(conexion, idMed)
-           print('La cantidad disponible del medicamento con identificador', idMed ,'es ', row)
+           if (row!=None):
+            print('La cantidad disponible del medicamento con identificador', idMed ,'es ', row)
 
 
        elif opc==2:

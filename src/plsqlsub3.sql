@@ -7,6 +7,12 @@ BEGIN
     SELECT CantidadMed INTO cantidad FROM Medicamento WHERE IDmedicamento = idMed;
     DBMS_OUTPUT.PUT_LINE('La cantidad disponible del medicamento con identificador ' || idMed || ' es : ' || cantidad);
     RETURN (cantidad);
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+           DBMS_OUTPUT.PUT_LINE('ERROR, argumentos no válidos');
+           RAISE_APPLICATION_ERROR (-20303, 'ERROR, El medicamento no existe');
+    WHEN OTHERS THEN
+    RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END FUNCTION1;
 /
 
@@ -71,7 +77,8 @@ BEGIN
     WHEN cant THEN
             DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no disponible');
             RAISE_APPLICATION_ERROR (-20310, 'ERROR, cantidad no disponible');
-			RAISE;
+    WHEN OTHERS THEN
+		        RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END asignar_med;
 /
 
@@ -91,5 +98,7 @@ BEGIN
     WHEN cant THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, cantidad no valida');
 		  RAISE_APPLICATION_ERROR (-20311, 'ERROR, cantidad no valida');
+    WHEN OTHERS THEN
+  		RAISE_APPLICATION_ERROR (-20100, 'Error desconocido');
 END aniadirStock;
 /
