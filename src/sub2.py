@@ -74,7 +74,7 @@ def addTratamiento(conexion):
 
     if (fecha_correcta1 and fecha_correcta2):
         try:
-            cursor.callproc('addTratamiento',(idtratamiento,fechaInicio,fechaFinal,descripcion,empleado))
+            cursor.callproc('addTratamiento',(idtratamiento,fechaInicio,fechaFinal,datos,dniempleado))
         except cx_Oracle.IntegrityError as error:
             print( (error.args[0].message).split('\n')[0] )
         except cx_Oracle.DatabaseError as error:

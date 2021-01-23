@@ -102,8 +102,8 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE addTratamiento (idtratamienton TratamientoTrata.IDtratamiento%type,
-	fechain TratamientoTrata.FechaI%type,
-	fechafn TratamientoTrata.FechaF%type,
+	fechain varchar2,
+	fechafn varchar2,
 	descripcionn TratamientoTrata.Descripcion%type,
 	dnipacienten TratamientoTrata.DNIpaciente%type)
 IS 
@@ -118,7 +118,7 @@ PRAGMA EXCEPTION_INIT (mucho_texto, -12899);
 
 BEGIN 
 	INSERT INTO TratamientoTrata (IDtratamiento, FechaI, FechaF, Descripcion, DNIpaciente)
-	VALUES (idtratamienton, fechain, fechafn, descripcionn, dnipacienten);
+	VALUES (idtratamienton, TO_DATE( fechain,'YYYY-MM-DD'), TO_DATE( fechafn,'YYYY-MM-DD'), descripcionn, dnipacienten);
 	COMMIT; 
 
 	EXCEPTION
