@@ -24,7 +24,6 @@ BEGIN
 		RAISE_APPLICATION_ERROR (-20101, 'Tipo de empleado no válido');
 	END IF;
 
-	COMMIT;
     
     EXCEPTION
         WHEN salario_negativo THEN
@@ -67,7 +66,6 @@ BEGIN
 	END IF;
 
 	DELETE FROM empleado WHERE dniempleado = dniEmp;
-	COMMIT;
 
    EXCEPTION
  	 WHEN no_existe THEN
@@ -108,7 +106,6 @@ BEGIN
 	SET nombreyapellidos = nombreApe, salario = sal
 	WHERE dniempleado = dniEmp;
 
-	COMMIT;
 
 	EXCEPTION
  	 WHEN no_existe THEN
@@ -171,7 +168,6 @@ BEGIN
 	SET dniempleado = dniEmp
 	WHERE dnipaciente = dniHis;
 
-	COMMIT;
 
 	EXCEPTION
  	 WHEN mismo_medico THEN

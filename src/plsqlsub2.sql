@@ -28,7 +28,6 @@ PRAGMA EXCEPTION_INIT(pya_invalido, -12899);
 BEGIN 
 	INSERT INTO HistorialAsigna (DNIpaciente,Telefono,PyA,GS,DNIempleado) 
 	VALUES(dnin, telefonon, pyan, gsn, dniempleadon);
-	COMMIT; 
 	
 	EXCEPTION
 		WHEN dni_duplicado THEN
@@ -63,7 +62,6 @@ BEGIN
 	UPDATE HistorialAsigna
 	SET Telefono = telefonon, PyA = pyan, GS = gsn
 	WHERE DNIpaciente = dni; 
-	COMMIT;
 
 	EXCEPTION
 		WHEN no_existe THEN
@@ -119,7 +117,6 @@ PRAGMA EXCEPTION_INIT (mucho_texto, -12899);
 BEGIN 
 	INSERT INTO TratamientoTrata (IDtratamiento, FechaI, FechaF, Descripcion, DNIpaciente)
 	VALUES (idtratamienton, TO_DATE( fechain,'YYYY-MM-DD'), TO_DATE( fechafn,'YYYY-MM-DD'), descripcionn, dnipacienten);
-	COMMIT; 
 
 	EXCEPTION
 		WHEN no_existe THEN

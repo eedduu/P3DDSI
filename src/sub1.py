@@ -27,6 +27,7 @@ def menuEmpleados(conn):
 			
 			try:			
 				cursor.callproc("crearEmpleado", (dni, nombreApe,salario,tipo))
+                                conn.commit()
 			except cx_Oracle.IntegrityError as error:
 				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
@@ -41,6 +42,7 @@ def menuEmpleados(conn):
 
 			try:
 				cursor.callproc("borrarEmpleado", [dni])
+                                conn.commit()
 			except cx_Oracle.IntegrityError as error:
 				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
@@ -56,6 +58,7 @@ def menuEmpleados(conn):
 
 			try:
 				cursor.callproc("modificarEmpleado", (dni, nombreApe,salario))
+                                conn.commit()
 			except cx_Oracle.IntegrityError as error:
 				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
@@ -71,6 +74,7 @@ def menuEmpleados(conn):
 
 			try:
 				cursor.callproc("asignarMedicoCabHistorial", (dniEmp, dniHis))
+                                conn.commit()
 			except cx_Oracle.IntegrityError as error:
 				print( (error.args[0].message).split('\n')[0] )
 			except cx_Oracle.DatabaseError as error:
