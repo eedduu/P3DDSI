@@ -70,11 +70,11 @@ def addTratamiento(conexion):
         fecha_correcta2 = False
     
     datos           = input('Información asociada al tratamiento: ')
-    dniempleado     = input('DNI del médico que ha puesto el tratamiento: ')
+    dnipaciente     = input('DNI del paciente: ')
 
     if (fecha_correcta1 and fecha_correcta2):
         try:
-            cursor.callproc('addTratamiento',(idtratamiento,fechaInicio,fechaFinal,datos,dniempleado))
+            cursor.callproc('addTratamiento',(idtratamiento,fechaInicio,fechaFinal,datos,dnipaciente))
         except cx_Oracle.IntegrityError as error:
             print( (error.args[0].message).split('\n')[0] )
         except cx_Oracle.DatabaseError as error:
