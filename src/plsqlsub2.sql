@@ -1,5 +1,5 @@
 create or replace TRIGGER nuevoTratamiento
-AFTER INSERT ON TratamientoTrata
+BEFORE INSERT ON TratamientoTrata
 FOR EACH ROW
 DECLARE
     n INTEGER;
