@@ -74,9 +74,8 @@ no_existe EXCEPTION;
 PRAGMA EXCEPTION_INIT (no_existe, -20300);
 
 BEGIN 
-	SELECT * FROM HistorialAsigna INTO fila WHERE DNIpaciente = dni;
+	SELECT * INTO fila FROM HistorialAsigna WHERE DNIpaciente = dni;
 	DBMS_OUTPUT.PUT_LINE('DNI: ' || fila.DNIpaciente || ' Telefono: ' || fila.telefono ||'GS: ' || fila.gs || ' Patologias y alergias: ' || fila.PyA || ' DNI medico cabecera' || fila.DNIempleado );
-
 EXCEPTION
 		WHEN no_existe THEN
 			DBMS_OUTPUT.PUT_LINE('ERROR, el historial con ese DNI no existe');
