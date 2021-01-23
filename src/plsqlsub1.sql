@@ -53,7 +53,9 @@ CREATE OR REPLACE PROCEDURE borrarEmpleado(dniEmp varchar2) IS
 nu INT;
 
 no_existe EXCEPTION;
+no_quedan EXCEPTION;
 
+PRAGMA EXCEPTION_INIT (no_quedan, -20600);
 PRAGMA EXCEPTION_INIT (no_existe, -20201);
 
 BEGIN
@@ -69,8 +71,11 @@ BEGIN
 
    EXCEPTION
  	 WHEN no_existe THEN
- 	   DBMS_OUTPUT.PUT_LINE('ERROR, el salario debe ser positivo');
+ 	   DBMS_OUTPUT.PUT_LINE('ERROR, no existe el empleado que pretende borrar');
 		RAISE_APPLICATION_ERROR (-20201, 'ERROR, el empleado no existe');
+	 WHEN no_quedan THEN
+		DBMS_OUTPUT.PUT_LINE('ERROR, no quedan más medicos de cabecera');
+		RAISE_APPLICATION_ERROR (-20600, 'ERROR, no quedan más medicos de cabecera');
  	 WHEN others THEN
    	DBMS_OUTPUT.PUT_LINE('ERROR desconocido ');
 		RAISE_APPLICATION_ERROR (-20202, 'ERROR desconocido');
@@ -192,19 +197,12 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER ANTES_BORRADO_EMPLEADO
-	BEFORE 
+	FOR 
 	DELETE ON MEDCABECERA
-	FOR EACH ROW
-DECLARE 
+	COMPOUND TRIGGER
 
 	diactual date;	
 	n_otros INTEGER;
-	fila_consulta CONSULTAPIDEREALIZA%ROWTYPE;
-
-	cursor consultas IS SELECT * FROM CONSULTAPIDEREALIZA 
-	WHERE (DNIEMPLEADO = :old.DNIEMPLEADO AND fecha >= diactual);
-
-
 	fila_paciente HISTORIALASIGNA%ROWTYPE;
 
 	cursor pacientes IS SELECT * FROM HISTORIALASIGNA 
@@ -212,6 +210,22 @@ DECLARE
 
 	nuevo_medico varchar(9);
 
+BEFORE EACH ROW IS
+BEGIN
+
+	DBMS_OUTPUT.PUT_LINE(:old.DNIEMPLEADO);
+-- recorro los pacientes que tenia asignado y los re-asigno
+	OPEN pacientes;
+	FETCH pacientes INTO fila_paciente;
+	WHILE pacientes%found LOOP
+		UPDATE HISTORIALASIGNA SET DNIEMPLEADO = NULL WHERE DNIEMPLEADO = :old.DNIEMPLEADO;
+		FETCH pacientes INTO fila_paciente; 
+	END LOOP;
+	CLOSE pacientes;
+	
+END BEFORE EACH ROW;
+
+AFTER STATEMENT IS
 BEGIN
 
 	SELECT CURRENT_DATE into diactual FROM DUAL;
@@ -221,36 +235,19 @@ BEGIN
 	-- no haría falta cancelar el borrado, pero es un caso extremo.
 	-- No merece la pena.
 
-	SELECT count(*) INTO n_otros FROM  MEDCABECERA
-		WHERE (DNIEMPLEADO <> :old.DNIEMPLEADO);
+	SELECT count(*) INTO n_otros FROM  MEDCABECERA;
 
 	IF (n_otros = 0) THEN
 		RAISE_APPLICATION_ERROR (-20600, 'No hay otros médicos de cabecera');	
 	END IF;	
 
-   -- Cancelo las consultas pendientes.
-	OPEN consultas;
-	FETCH consultas INTO fila_consulta;
-	WHILE consultas%found LOOP
-		cancelarConsulta(fila_consulta.IDCONSULTA);
-		FETCH consultas INTO fila_consulta; 
-	END LOOP;
-	CLOSE consultas;
-
-
 	-- Selecciono nuevo.
 	SELECT * INTO nuevo_medico FROM MEDCABECERA
-	 WHERE ( DNIEMPLEADO <> :old.DNIEMPLEADO AND rownum = 1);
+	 WHERE rownum = 1;
 
 	-- recorro los pacientes que tenia asignado y los re-asigno
-	OPEN pacientes;
-	FETCH pacientes INTO fila_paciente;
-	WHILE pacientes%found LOOP
-		asignarMedicoCabHistorial(nuevo_medico, fila_paciente.DNIPACIENTE);
-		FETCH pacientes INTO fila_paciente; 
-	END LOOP;
-	CLOSE pacientes;
-
+	UPDATE HISTORIALASIGNA SET DNIEMPLEADO = nuevo_medico where DNIEMPLEADO is null;
+END AFTER STATEMENT;
 END;
 
 

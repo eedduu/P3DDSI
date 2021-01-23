@@ -128,7 +128,7 @@ def crear_tablas(conexion):
 				Telefono number(11),
 				PyA varchar2(40),
 				GS varchar2(3) CHECK (GS in ('A-', 'A+', 'B-', 'B+', 'AB+', 'AB-', '0-', '0+')),
-				DNIempleado NOT NULL REFERENCES Medcabecera(DNIempleado)
+				DNIempleado REFERENCES Medcabecera(DNIempleado)
 			)''')
 			
 		cursor.execute('''
@@ -137,7 +137,7 @@ def crear_tablas(conexion):
 				Valida varchar2(5) CHECK (Valida in ('true', 'false')),
 				Fecha date,
 				DNIpaciente NOT NULL REFERENCES HistorialAsigna(DNIpaciente),
-				DNIempleado NOT NULL REFERENCES Empleado(DNIempleado)
+				DNIempleado NOT NULL REFERENCES Empleado(DNIempleado) ON DELETE CASCADE
 			)''')
 
 		cursor.execute('''
@@ -146,14 +146,14 @@ def crear_tablas(conexion):
 				FechaI date,
 				FechaF date,
 				Descripcion varchar2(40),
-				DNIpaciente NOT NULL REFERENCES HistorialAsigna(DNIpaciente),
+				DNIpaciente REFERENCES HistorialAsigna(DNIpaciente),
 				CONSTRAINT antiviaje CHECK( FechaI < FechaF )
 			)''')
 
 		cursor.execute('''
 			CREATE TABLE Reserva(
 				IDmaquina REFERENCES Maquina(IDmaquina),
-				IDconsulta REFERENCES ConsultaPideRealiza(IDconsulta),
+				IDconsulta REFERENCES ConsultaPideRealiza(IDconsulta) ON DELETE CASCADE,
 				PRIMARY KEY (IDmaquina,IDconsulta)
 			)''')
 
